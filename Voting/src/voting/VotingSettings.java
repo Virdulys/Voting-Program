@@ -28,7 +28,7 @@ public class VotingSettings {
     
     private JFrame frmVotingParticipants;
     private JMenuBar menuBar;
-    private JMenu mnMenu;//
+    private JMenu mnMenu;
     private JMenuItem mntmAddParticipant;
     private Vector<Participant> participants = new Vector<Participant>();
     private JMenuItem mntmRemoveSelectedParticipants;
