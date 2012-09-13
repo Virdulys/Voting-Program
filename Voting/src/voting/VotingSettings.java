@@ -223,7 +223,7 @@ public class VotingSettings {
     private class RemoveSelectedAction extends AbstractAction {
         public RemoveSelectedAction() {
             putValue(NAME, "Remove Selected");
-            putValue(SHORT_DESCRIPTION, "Some short description");
+            putValue(SHORT_DESCRIPTION, "Ištrinti pasirinktus dalyvius");
         }
         public void actionPerformed(ActionEvent e) {
         }
