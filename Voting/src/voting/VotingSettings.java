@@ -96,6 +96,7 @@ public class VotingSettings {
         menuBar = new JMenuBar();
         frmVotingParticipants.setJMenuBar(menuBar);
         
+        //TODO button
         votingResults = new VotingResults();
         votingResults.setParticipants(participants);
         SwingUtilities.invokeLater(new Runnable() {
