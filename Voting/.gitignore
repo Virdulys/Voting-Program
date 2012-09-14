@@ -1,5 +1,6 @@
 bin
 .metadata
+.classpath
 *.class
 
 # Package Files #
