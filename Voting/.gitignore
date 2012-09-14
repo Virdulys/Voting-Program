@@ -1,6 +1,5 @@
 bin
 .metadata
-.classpath
 *.class
 
 # Package Files #
@@ -8,4 +7,3 @@ bin
 *.war
 *.ear
 *.zip
-/.classpath
