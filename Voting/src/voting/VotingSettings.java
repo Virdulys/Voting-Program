@@ -60,7 +60,7 @@ public class VotingSettings {
     }
 
     /**
-     * Initialize the contents of the frame.
+     * Initialize the contents of the frame...
      */
     private void initialize() {
         frmVotingParticipants = new JFrame();
