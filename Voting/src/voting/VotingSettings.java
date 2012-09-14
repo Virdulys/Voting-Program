@@ -58,8 +58,6 @@ public class VotingSettings {
      * Create the application.
      */
     public VotingSettings(VotingResults votingResults) {
-        //this.votingResults = votingResults;
-        //votingResults.getFrame().setVisible(true);
         initialize();
     }
 
