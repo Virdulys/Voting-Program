@@ -1,5 +1,5 @@
 package voting;
-// aaa
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -21,7 +21,7 @@ import net.miginfocom.swing.MigLayout;
 public class AddParticipant extends JDialog {
 
     private final JPanel contentPanel = new JPanel();
-    private Participant participant = null; 
+    private Participant participant = null;
     private JTextField txtParticipantName;
     private JTextField txtTeamName;
     private JTextField txtPoints;
