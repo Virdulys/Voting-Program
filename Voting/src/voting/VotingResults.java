@@ -1,46 +1,30 @@
 package voting;
 
+import java.util.Vector;
+
 import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
 
-public class VotingResults {
+public class VotingResults extends JFrame{
 
-    private JFrame frame;
-
-    public JFrame getFrame() {
-        return frame;
-    }
-
-    public void setFrame(JFrame frame) {
-        this.frame = frame;
-    }
-
-    /**
-     * Create the application.
-     */
-    public VotingResults() {
-        initialize();
-    }
-
-    /**
-     * Initialize the contents of the frame.
-     */
-    private void initialize() {
-        frame = new JFrame();
-        frame.setBounds(100, 100, 450, 300);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    }
+    private Vector<Participant> participants;
+    public VotingResultsPanel resultsPanel;
     
     public void createAndShowGUI() {
-        System.out.println("Created GUI on EDT? "+
-                SwingUtilities.isEventDispatchThread());
-        JFrame f = new JFrame("Swing Paint Demo");
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setSize(250,250);
-        VotingResultsPanel resultsPanel = new VotingResultsPanel();
-        f.add(resultsPanel);
-        f.pack();
-        //f.setVisible(true);
+        resultsPanel = new VotingResultsPanel();
+        add(resultsPanel);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setSize(400, 280);
+        setLocationRelativeTo(null);
+        setVisible(true);
+        resultsPanel.setParticipantsList(participants);
+    }
+
+    public void setParticipants(Vector<Participant> participants) {
+        this.participants = participants;
+    }
+    
+    public void refreshResults() {
+        resultsPanel.refreshResults();
     }
     
 }
