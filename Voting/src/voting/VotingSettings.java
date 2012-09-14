@@ -53,7 +53,7 @@ public class VotingSettings {
     private JButton btnRemoveParticipants;
 
     /**
-     * Create the application.
+     * Create the VotingSettings window.
      */
     public VotingSettings(VotingResults votingResults) {
         initialize();
