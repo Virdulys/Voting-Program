@@ -21,7 +21,7 @@ import net.miginfocom.swing.MigLayout;
 public class AddParticipant extends JDialog {
 
     private final JPanel contentPanel = new JPanel();
-    private Participant participant = null; // participant
+    private Participant participant = null;
     private JTextField txtParticipantName;
     private JTextField txtTeamName;
     private JTextField txtPoints;
