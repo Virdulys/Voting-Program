@@ -99,7 +99,7 @@ public class VotingSettings {
         frmVotingParticipants.setJMenuBar(menuBar);
         
         votingResults = new VotingResults();
-        votingResults.setFrame(new JFrame());
+        votingResults.setParticipants(participants);
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 votingResults.createAndShowGUI();
@@ -226,4 +226,5 @@ public class VotingSettings {
         public void actionPerformed(ActionEvent e) {
         }
     }
+    
 }
