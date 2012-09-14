@@ -215,7 +215,7 @@ public class VotingSettings {
     private class AddParticipantAction extends AbstractAction {
         public AddParticipantAction() {
             putValue(NAME, "Add Participant");
-            putValue(SHORT_DESCRIPTION, "Some short description");
+            putValue(SHORT_DESCRIPTION, "Pridėti dalyvį");
         }
         public void actionPerformed(ActionEvent e) {
         }

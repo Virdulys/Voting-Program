@@ -1,12 +1,7 @@
 package voting;
 
 import javax.swing.JFrame;
-import javax.swing.JTable;
 import javax.swing.SwingUtilities;
-
-import java.awt.BorderLayout;
-import javax.swing.table.DefaultTableModel;
-import java.awt.Canvas;
 
 public class VotingResults {
 
