@@ -24,8 +24,7 @@ import javax.swing.table.DefaultTableModel;
 
 public class VotingSettings {
     
-    private VotingResults votingResults;
-    
+    private VotingResults votingResults = null;
     private JFrame frmVotingParticipants;
     private JMenuBar menuBar;
     private JMenu mnMenu;
@@ -52,7 +51,6 @@ public class VotingSettings {
     private JButton btnAddParticipant;
     private final Action removeSelectedAction = new RemoveSelectedAction();
     private JButton btnRemoveParticipants;
-    private JButton button;
 
     /**
      * Create the application.
