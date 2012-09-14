@@ -1,5 +1,9 @@
 package voting;
 
+/*
+ * 
+ */
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Insets;
@@ -223,7 +227,7 @@ public class VotingSettings {
     private class RemoveSelectedAction extends AbstractAction {
         public RemoveSelectedAction() {
             putValue(NAME, "Remove Selected");
-            putValue(SHORT_DESCRIPTION, "Ištrinti pasirinktus dalyvius");
+            putValue(SHORT_DESCRIPTION, "Iï¿½trinti pasirinktus dalyvius");
         }
         public void actionPerformed(ActionEvent e) {
         }
