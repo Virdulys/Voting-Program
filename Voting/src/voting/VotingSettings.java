@@ -273,6 +273,7 @@ public class VotingSettings {
             votingResults = new VotingResults(participants);
         else
             votingResults.refreshResults();
+        votingResults.setVisible(true);
     }
     
     private class SwingAction extends AbstractAction {

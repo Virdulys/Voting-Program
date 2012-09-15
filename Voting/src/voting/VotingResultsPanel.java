@@ -97,10 +97,10 @@ public class VotingResultsPanel extends JPanel implements Runnable{
                 entryHeight = (int)Math.round(screenRes / 150.0)+30;
                 
                 //Creating an entry - image, from participants data 
-                BufferedImage off_Image = new BufferedImage(entryWidth,
+                BufferedImage offImage = new BufferedImage(entryWidth,
                         entryHeight, BufferedImage.TYPE_INT_ARGB);
                 //Getting image drawing graphics
-                Graphics2D g2 = off_Image.createGraphics(); 
+                Graphics2D g2 = offImage.createGraphics(); 
                 g2.setRenderingHints(rh);
                 //Setting entries background color 
                 g2.setPaint(Color.RED);
@@ -116,7 +116,7 @@ public class VotingResultsPanel extends JPanel implements Runnable{
                 g2.drawString("" + participants.get(i).getPoints(),
                         +entryWidth - 50, 20);
                 //Setting drawn image to participants data
-                participants.get(i).setBuffImage(off_Image);
+                participants.get(i).setBuffImage(offImage);
             }       
             //Create a shallow copy of participants list
             participantsSorted = (Vector<Participant>) participants.clone();

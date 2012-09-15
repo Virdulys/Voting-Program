@@ -12,10 +12,9 @@ public class VotingResults extends JFrame{
     public  VotingResults(Vector<Participant> participants) {
         resultsPanel = new VotingResultsPanel(participants);
         add(resultsPanel);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(400, 280);
         setLocationRelativeTo(null);
-        setVisible(true);
+        //setVisible(true);
     }
 
     public void setParticipants(Vector<Participant> participants) {
