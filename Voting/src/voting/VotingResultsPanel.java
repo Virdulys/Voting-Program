@@ -132,7 +132,7 @@ public class VotingResultsPanel extends JPanel implements Runnable{
                 System.out.println(participantsSorted.size());
                 System.out.println(participantsSorted.get(i).getParticipantName());
                 Participant tempParticipant =  participantsSorted.get(i);
-                tempParticipant.animatePos(PosToY(tempParticipant.getLastPos()), PosToY(tempParticipant.getNewPos()), DURATION);
+                tempParticipant.animatePos(posToY(tempParticipant.getLastPos()), posToY(tempParticipant.getNewPos()), DURATION);
             }
             animate= false;
         }
@@ -144,8 +144,8 @@ public class VotingResultsPanel extends JPanel implements Runnable{
         g2d.setRenderingHints(rh);
         
         for (int i = 0; i < participantsSorted.size(); i++) {
-            if (participantsSorted.get(i).buffImage != null){
-                g2d.drawImage(participantsSorted.get(i).buffImage, null, entryLeftSpacing,
+            if (participantsSorted.get(i).getBuffImage() != null){
+                g2d.drawImage(participantsSorted.get(i).getBuffImage(), null, entryLeftSpacing,
                         participantsSorted.get(i).getY());
             }
         }
@@ -157,7 +157,7 @@ public class VotingResultsPanel extends JPanel implements Runnable{
         refresh = true;     
     }
     
-    public int PosToY (int pos) {
+    public int posToY (int pos) {
         return entryTopSpacing * (pos + 1) + entryHeight * pos;
     }
     

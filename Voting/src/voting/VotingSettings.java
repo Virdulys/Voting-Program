@@ -51,6 +51,9 @@ public class VotingSettings {
     private JButton btnAddParticipant;
     private final Action removeSelectedAction = new RemoveSelectedAction();
     private JButton btnRemoveParticipants;
+    private JToolBar bottomToolBar;
+    private final Action displayResultsAction = new SwingAction();
+    private JButton btnDisplayResults;
 
     /**
      * Create the application.
@@ -132,6 +135,18 @@ public class VotingSettings {
         
         table = new JTable(model);
         scrollPane.setViewportView(table);
+        
+        bottomToolBar = new JToolBar();
+        bottomToolBar.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        bottomToolBar.setFloatable(false);
+        frmVotingParticipants.getContentPane().add(bottomToolBar, BorderLayout.SOUTH);
+        
+        btnDisplayResults = bottomToolBar.add(displayResultsAction);
+        btnDisplayResults.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                displayResults();
+            }
+        });
         
         table.getColumnModel().getColumn(3).setMaxWidth(75);
         table.getColumnModel().getColumn(2).setMaxWidth(75);
@@ -219,7 +234,7 @@ public class VotingSettings {
         }
     }
     
-    //Use this method in refresh button
+    // Use this method in refresh button
     private void displayResults() {
         if (votingResults == null)
             votingResults = new VotingResults(participants);
@@ -227,4 +242,12 @@ public class VotingSettings {
             votingResults.refreshResults();
     }
     
+    private class SwingAction extends AbstractAction {
+        public SwingAction() {
+            putValue(NAME, "SwingAction");
+            putValue(SHORT_DESCRIPTION, "Some short description");
+        }
+        public void actionPerformed(ActionEvent e) {
+        }
+    }
 }
