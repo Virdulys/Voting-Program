@@ -22,6 +22,13 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.JSeparator;
+import javax.swing.SwingConstants;
+import java.awt.Dimension;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.CompoundBorder;
+import javax.swing.UIManager;
+import javax.swing.ImageIcon;
 
 public class VotingSettings {
     
@@ -55,6 +62,7 @@ public class VotingSettings {
     private JToolBar bottomToolBar;
     private final Action displayResultsAction = new SwingAction();
     private JButton btnDisplayResults;
+    private JSeparator separator;
 
     /**
      * Create the application.
@@ -103,18 +111,52 @@ public class VotingSettings {
         //TODO button with action call to displayResults()
         
         toolBar = new JToolBar();
+        toolBar.setFocusable(false);
         toolBar.setAlignmentX(Component.LEFT_ALIGNMENT);
         toolBar.setAlignmentY(Component.CENTER_ALIGNMENT);
         toolBar.setFloatable(false);
         toolBar.setRollover(true);
         frmVotingParticipants.getContentPane().add(toolBar, BorderLayout.NORTH);
         
+        btnDisplayResults = toolBar.add(displayResultsAction);
+        btnDisplayResults.setHorizontalTextPosition(SwingConstants.TRAILING);
+        btnDisplayResults.setHorizontalAlignment(SwingConstants.LEFT);
+        btnDisplayResults.setIconTextGap(5);
+        btnDisplayResults.setIcon(new ImageIcon(VotingSettings.class.getResource("/icons/Refresh.png")));
+        btnDisplayResults.setBorder(UIManager.getBorder("Button.border"));
+        btnDisplayResults.setFocusable(false);
+        btnDisplayResults.setMargin(new Insets(0, 5, 0, 10));
+        btnDisplayResults.setToolTipText("Display results in a new window");
+        btnDisplayResults.setText("Display Results");
+        btnDisplayResults.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                displayResults();
+            }
+        });
+        
+        separator = new JSeparator();
+        separator.setMaximumSize(new Dimension(2, 32767));
+        separator.setOrientation(SwingConstants.VERTICAL);
+        toolBar.add(separator);
+        
         btnAddParticipant = toolBar.add(addParticipantAction);
-        btnAddParticipant.setMargin(new Insets(0, 5, 0, 5));
+        btnAddParticipant.setIconTextGap(5);
+        btnAddParticipant.setHorizontalTextPosition(SwingConstants.TRAILING);
+        btnAddParticipant.setHorizontalAlignment(SwingConstants.LEFT);
+        btnAddParticipant.setIcon(new ImageIcon(VotingSettings.class.getResource("/icons/Add.png")));
+        btnAddParticipant.setFocusable(false);
+        btnAddParticipant.setToolTipText("Add new participant");
+        btnAddParticipant.setMargin(new Insets(0, 10, 0, 5));
         btnAddParticipant.setFocusPainted(false);
         btnAddParticipant.setText("Add Participant");
         
         btnRemoveParticipants = toolBar.add(removeSelectedAction);
+        btnRemoveParticipants.setIcon(new ImageIcon(VotingSettings.class.getResource("/icons/Delete.png")));
+        btnRemoveParticipants.setHorizontalAlignment(SwingConstants.LEFT);
+        btnRemoveParticipants.setIconTextGap(5);
+        btnRemoveParticipants.setHorizontalTextPosition(SwingConstants.TRAILING);
+        btnRemoveParticipants.setFocusable(false);
+        btnRemoveParticipants.setToolTipText("Remove selected participants");
         btnRemoveParticipants.setMargin(new Insets(0, 5, 0, 5));
         btnRemoveParticipants.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -137,18 +179,7 @@ public class VotingSettings {
         table = new JTable(model);
         scrollPane.setViewportView(table);
         
-        bottomToolBar = new JToolBar();
-        bottomToolBar.setBorder(null);
-        bottomToolBar.setFloatable(false);
-        frmVotingParticipants.getContentPane().add(bottomToolBar, BorderLayout.SOUTH);
-        bottomToolBar.add(Box.createHorizontalGlue());
-        btnDisplayResults = bottomToolBar.add(displayResultsAction);
-        btnDisplayResults.setText("Display Results");
-        btnDisplayResults.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-                displayResults();
-            }
-        });
+        //bottomToolBar.add(Box.createHorizontalGlue());
         
         table.getColumnModel().getColumn(3).setMaxWidth(75);
         table.getColumnModel().getColumn(2).setMaxWidth(75);
