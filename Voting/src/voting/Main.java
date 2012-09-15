@@ -37,7 +37,7 @@ public class Main {
                 }
                 
                 try {
-                    VotingSettings settingsWindow = new VotingSettings(new VotingResults());
+                    VotingSettings settingsWindow = new VotingSettings();
                     settingsWindow.getFrame().setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();

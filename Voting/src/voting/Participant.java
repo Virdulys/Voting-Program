@@ -14,13 +14,14 @@ import org.pushingpixels.trident.Timeline;
 public class Participant implements Comparable<Participant>{
     private int points;
     private String participantName;
-    private String teamName;
+    private String teamName;   
     
-    public BufferedImage BuffImage;
-    public int LastPos;
-    public int NewPos;
-    public int y;
-    public  Timeline animateTimeline;
+    //Animation variables
+    private BufferedImage buffImage; // We keep generated entry for painting here
+    private int lastPos; // We animate from this position to newPos
+    private int newPos; // We animate from oldPos to his position
+    private int y; //y coordinate is used for animating y values
+    private  Timeline animateTimeline; //Animator
     
     public Participant(String participantName, String teamName, int points) {
         super();
@@ -33,26 +34,26 @@ public class Participant implements Comparable<Participant>{
         super();
     }
     
+    //Here we initialize the animation from oldPos to newPos
     public void animatePos(int start, int end, int duration) {
-        System.out.println(start + " "+ end);
-        this.animateTimeline = new Timeline(this);
+        this.animateTimeline = new Timeline(this); //We create new Timeline
         this.animateTimeline.addPropertyToInterpolate(
-                Timeline.<Integer> property("y").from(start).to(end));
-        this.animateTimeline.setDuration(duration);        
-        this.animateTimeline.play();
+                Timeline.<Integer> property("y").from(start).to(end)); //Set animation properties
+        this.animateTimeline.setDuration(duration);         //Animation duration
+        this.animateTimeline.play(); // We start animation
     }
     
     public int getNewPos() {
-        return NewPos;
+        return newPos;
     }
     public void setNewPos(int newPos) {
-        NewPos = newPos;
+        this.newPos = newPos;
     }
     public int getLastPos() {
-        return LastPos;
+        return lastPos;
     }
     public void setLastPos(int lastPos) {
-        LastPos = lastPos;
+        this.lastPos = lastPos;
     }
     public int getY() {
         return y;
@@ -62,10 +63,10 @@ public class Participant implements Comparable<Participant>{
         this.y = y;
     }
     public BufferedImage getBuffImage() {
-        return BuffImage;
+        return buffImage;
     }
     public void setBuffImage(BufferedImage buffImage) {
-        BuffImage = buffImage;
+        this.buffImage = buffImage;
     }
 
     public int getPoints() {

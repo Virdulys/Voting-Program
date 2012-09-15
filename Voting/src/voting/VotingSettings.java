@@ -9,6 +9,7 @@ import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -21,6 +22,13 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.JSeparator;
+import javax.swing.SwingConstants;
+import java.awt.Dimension;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.CompoundBorder;
+import javax.swing.UIManager;
+import javax.swing.ImageIcon;
 
 public class VotingSettings {
     
@@ -51,11 +59,15 @@ public class VotingSettings {
     private JButton btnAddParticipant;
     private final Action removeSelectedAction = new RemoveSelectedAction();
     private JButton btnRemoveParticipants;
+    private JToolBar bottomToolBar;
+    private final Action displayResultsAction = new SwingAction();
+    private JButton btnDisplayResults;
+    private JSeparator separator;
 
     /**
      * Create the application.
      */
-    public VotingSettings(VotingResults votingResults) {
+    public VotingSettings() {
         initialize();
     }
 
@@ -96,36 +108,62 @@ public class VotingSettings {
         menuBar = new JMenuBar();
         frmVotingParticipants.setJMenuBar(menuBar);
         
-        //TODO button
-        votingResults = new VotingResults();
-        votingResults.setParticipants(participants);
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                votingResults.createAndShowGUI();
-            }
-        });
+        //TODO button with action call to displayResults()
         
         toolBar = new JToolBar();
+        toolBar.setFocusable(false);
         toolBar.setAlignmentX(Component.LEFT_ALIGNMENT);
         toolBar.setAlignmentY(Component.CENTER_ALIGNMENT);
         toolBar.setFloatable(false);
         toolBar.setRollover(true);
         frmVotingParticipants.getContentPane().add(toolBar, BorderLayout.NORTH);
         
+        btnDisplayResults = toolBar.add(displayResultsAction);
+        btnDisplayResults.setHorizontalTextPosition(SwingConstants.TRAILING);
+        btnDisplayResults.setHorizontalAlignment(SwingConstants.LEFT);
+        btnDisplayResults.setIconTextGap(5);
+        btnDisplayResults.setIcon(new ImageIcon(VotingSettings.class.getResource("/icons/Refresh.png")));
+        btnDisplayResults.setBorder(UIManager.getBorder("Button.border"));
+        btnDisplayResults.setFocusable(false);
+        btnDisplayResults.setMargin(new Insets(0, 5, 0, 10));
+        btnDisplayResults.setToolTipText("Display results in a new window");
+        btnDisplayResults.setText("Display Results");
+        btnDisplayResults.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                displayResults();
+            }
+        });
+        
+        separator = new JSeparator();
+        separator.setMaximumSize(new Dimension(2, 32767));
+        separator.setOrientation(SwingConstants.VERTICAL);
+        toolBar.add(separator);
+        
         btnAddParticipant = toolBar.add(addParticipantAction);
-        btnAddParticipant.setToolTipText("Prid\u0117ti nauj\u0105 dalyv\u012F");
-        btnAddParticipant.setMargin(new Insets(0, 5, 0, 5));
+        btnAddParticipant.setIconTextGap(5);
+        btnAddParticipant.setHorizontalTextPosition(SwingConstants.TRAILING);
+        btnAddParticipant.setHorizontalAlignment(SwingConstants.LEFT);
+        btnAddParticipant.setIcon(new ImageIcon(VotingSettings.class.getResource("/icons/Add.png")));
+        btnAddParticipant.setFocusable(false);
+        btnAddParticipant.setToolTipText("Add new participant");
+        btnAddParticipant.setMargin(new Insets(0, 10, 0, 5));
         btnAddParticipant.setFocusPainted(false);
-        btnAddParticipant.setText("Prid\u0117ti dalyv\u012F");
+        btnAddParticipant.setText("Add Participant");
         
         btnRemoveParticipants = toolBar.add(removeSelectedAction);
+        btnRemoveParticipants.setIcon(new ImageIcon(VotingSettings.class.getResource("/icons/Delete.png")));
+        btnRemoveParticipants.setHorizontalAlignment(SwingConstants.LEFT);
+        btnRemoveParticipants.setIconTextGap(5);
+        btnRemoveParticipants.setHorizontalTextPosition(SwingConstants.TRAILING);
+        btnRemoveParticipants.setFocusable(false);
+        btnRemoveParticipants.setToolTipText("Remove selected participants");
         btnRemoveParticipants.setMargin(new Insets(0, 5, 0, 5));
         btnRemoveParticipants.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 removeSelected();
             }
         });
-        btnRemoveParticipants.setActionCommand("Remove Selected");
+        //btnRemoveParticipants.setActionCommand("Remove Selected");
         btnRemoveParticipants.setFocusPainted(false);
         btnRemoveParticipants.setText("Remove Selected");
         
@@ -140,6 +178,8 @@ public class VotingSettings {
         
         table = new JTable(model);
         scrollPane.setViewportView(table);
+        
+        //bottomToolBar.add(Box.createHorizontalGlue());
         
         table.getColumnModel().getColumn(3).setMaxWidth(75);
         table.getColumnModel().getColumn(2).setMaxWidth(75);
@@ -227,4 +267,21 @@ public class VotingSettings {
         }
     }
     
+    // Use this method in refresh button
+    private void displayResults() {
+        if (votingResults == null)
+            votingResults = new VotingResults(participants);
+        else
+            votingResults.refreshResults();
+        votingResults.setVisible(true);
+    }
+    
+    private class SwingAction extends AbstractAction {
+        public SwingAction() {
+            putValue(NAME, "SwingAction");
+            putValue(SHORT_DESCRIPTION, "Some short description");
+        }
+        public void actionPerformed(ActionEvent e) {
+        }
+    }
 }
