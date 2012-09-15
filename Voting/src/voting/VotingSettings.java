@@ -2,6 +2,7 @@ package voting;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,26 +10,21 @@ import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.Box;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.JToolBar;
-import javax.swing.SwingUtilities;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.JSeparator;
-import javax.swing.SwingConstants;
-import java.awt.Dimension;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.CompoundBorder;
-import javax.swing.UIManager;
-import javax.swing.ImageIcon;
 
 public class VotingSettings {
     
@@ -59,7 +55,6 @@ public class VotingSettings {
     private JButton btnAddParticipant;
     private final Action removeSelectedAction = new RemoveSelectedAction();
     private JButton btnRemoveParticipants;
-    private JToolBar bottomToolBar;
     private final Action displayResultsAction = new SwingAction();
     private JButton btnDisplayResults;
     private JSeparator separator;

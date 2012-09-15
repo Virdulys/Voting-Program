@@ -14,7 +14,7 @@ import java.util.Vector;
 
 import javax.swing.JPanel;
 
-public class VotingResultsPanel extends JPanel implements Runnable{
+public class VotingResultsPanel extends JPanel implements Runnable {
 
     private Vector<Participant> participants;
     private Vector<Participant> participantsSorted;
@@ -27,7 +27,7 @@ public class VotingResultsPanel extends JPanel implements Runnable{
     private int entryWidth = 350; // 400
     private int entryTopSpacing = 15; //Pixels to be left out from the top when painting participants
     private int entryLeftSpacing = 20; // Pixels to be left out from the left side when painting entries
-    private final int DURATION = 1500; // Participants sorting animation duration
+    private final int DURATION = 300; // Participants sorting animation duration
     private String FONT = "Times"; // Font name
     private int delay = 50; //Thread delay
     
@@ -35,7 +35,7 @@ public class VotingResultsPanel extends JPanel implements Runnable{
     public VotingResultsPanel(Vector<Participant> participants) {
         
         this.participants = participants;
-        
+        setBackground(Color.DARK_GRAY);
         setDoubleBuffered(true);
         rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
@@ -92,9 +92,9 @@ public class VotingResultsPanel extends JPanel implements Runnable{
                 
                 //Screen, entry, font calculations from screen resolution
                 int screenRes = Toolkit.getDefaultToolkit().getScreenResolution();
-                int fontSize = (int)Math.round(12.0 * screenRes / 72.0);    
+                int fontSize = (int)Math.round(30.0 * screenRes / 72.0);    
                 entryWidth = getSize().width - 40;
-                entryHeight = (int)Math.round(screenRes / 150.0)+30;
+                entryHeight = (int)Math.round(screenRes / 150.0)+50;
                 
                 //Creating an entry - image, from participants data 
                 BufferedImage offImage = new BufferedImage(entryWidth,
@@ -103,18 +103,18 @@ public class VotingResultsPanel extends JPanel implements Runnable{
                 Graphics2D g2 = offImage.createGraphics(); 
                 g2.setRenderingHints(rh);
                 //Setting entries background color 
-                g2.setPaint(Color.RED);
+                g2.setPaint(Color.GRAY);
                 g2.fillRect(0, 0, entryWidth, entryHeight);
                 //Setting up font
-                Font theFont = new Font(FONT, Font.PLAIN, fontSize);    
-                g2.setPaint(Color.BLUE);
+                Font theFont = new Font(FONT, Font.BOLD, fontSize);
+                g2.setPaint(Color.CYAN);
                 g2.setFont(theFont);
                 //Drawing participants data into entry
                 //Here are some hard coded value to leave spacing from left side and top (20, 20)
-                g2.drawString(participants.get(i).getParticipantName(), 20, 20);
+                g2.drawString(participants.get(i).getParticipantName(), 20, 40);
                 //Here are some hard coded value to leave spacing from left side and top (entryWidth -50, 20)
                 g2.drawString("" + participants.get(i).getPoints(),
-                        +entryWidth - 50, 20);
+                        +entryWidth - 50, 40);
                 //Setting drawn image to participants data
                 participants.get(i).setBuffImage(offImage);
             }       
