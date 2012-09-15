@@ -9,7 +9,7 @@ public class VotingResults extends JFrame{
     private Vector<Participant> participants;
     public VotingResultsPanel resultsPanel;
     
-    public void createAndShowGUI() {
+    public  VotingResults(Vector<Participant> participants) {
         resultsPanel = new VotingResultsPanel();
         add(resultsPanel);
         setDefaultCloseOperation(EXIT_ON_CLOSE);

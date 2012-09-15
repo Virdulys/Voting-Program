@@ -55,7 +55,7 @@ public class VotingSettings {
     /**
      * Create the application.
      */
-    public VotingSettings(VotingResults votingResults) {
+    public VotingSettings() {
         initialize();
     }
 
@@ -96,14 +96,7 @@ public class VotingSettings {
         menuBar = new JMenuBar();
         frmVotingParticipants.setJMenuBar(menuBar);
         
-        //TODO button
-        votingResults = new VotingResults();
-        votingResults.setParticipants(participants);
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                votingResults.createAndShowGUI();
-            }
-        });
+        //TODO button with action call to displayResults()
         
         toolBar = new JToolBar();
         toolBar.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -224,6 +217,14 @@ public class VotingSettings {
         }
         public void actionPerformed(ActionEvent e) {
         }
+    }
+    
+    //Use this method in refresh button
+    private void displayResults() {
+        if (votingResults == null)
+            votingResults = new VotingResults(participants);
+        else
+            votingResults.refreshResults();
     }
     
 }
