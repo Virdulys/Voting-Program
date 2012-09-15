@@ -113,9 +113,10 @@ public class VotingSettings {
         frmVotingParticipants.getContentPane().add(toolBar, BorderLayout.NORTH);
         
         btnAddParticipant = toolBar.add(addParticipantAction);
+        btnAddParticipant.setToolTipText("Prid\u0117ti nauj\u0105 dalyv\u012F");
         btnAddParticipant.setMargin(new Insets(0, 5, 0, 5));
         btnAddParticipant.setFocusPainted(false);
-        btnAddParticipant.setText("Add Participant");
+        btnAddParticipant.setText("Prid\u0117ti dalyv\u012F");
         
         btnRemoveParticipants = toolBar.add(removeSelectedAction);
         btnRemoveParticipants.setMargin(new Insets(0, 5, 0, 5));
