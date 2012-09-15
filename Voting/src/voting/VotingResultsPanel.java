@@ -20,7 +20,7 @@ public class VotingResultsPanel extends JPanel implements Runnable{
     private Vector<Participant> participantsSorted;
     private boolean refresh = true; //Variable for forcing rerunning of refresh
     private boolean animate = true; //Variable for forcing rerunning of animation
-    private boolean initDone = false; //Variable stops rendering of participants, until init is done.
+    private boolean initDone = false; //Variable stops rendering of participants, until initialize is done.
     private Thread animator;
     private RenderingHints rh; 
     private int entryHeight = 30; // Size of the entry (background + participants name + team + points)
