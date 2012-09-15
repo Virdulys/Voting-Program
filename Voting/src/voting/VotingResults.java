@@ -7,7 +7,7 @@ import javax.swing.JFrame;
 public class VotingResults extends JFrame{
 
     private Vector<Participant> participants;
-    public VotingResultsPanel resultsPanel;
+    private VotingResultsPanel resultsPanel;
     
     public  VotingResults(Vector<Participant> participants) {
         resultsPanel = new VotingResultsPanel();
@@ -25,6 +25,14 @@ public class VotingResults extends JFrame{
     
     public void refreshResults() {
         resultsPanel.refreshResults();
+    }
+
+    public VotingResultsPanel getResultsPanel() {
+        return resultsPanel;
+    }
+
+    public void setResultsPanel(VotingResultsPanel resultsPanel) {
+        this.resultsPanel = resultsPanel;
     }
     
 }

@@ -9,6 +9,7 @@ import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -120,7 +121,7 @@ public class VotingSettings {
                 removeSelected();
             }
         });
-        btnRemoveParticipants.setActionCommand("Remove Selected");
+        //btnRemoveParticipants.setActionCommand("Remove Selected");
         btnRemoveParticipants.setFocusPainted(false);
         btnRemoveParticipants.setText("Remove Selected");
         
@@ -137,11 +138,12 @@ public class VotingSettings {
         scrollPane.setViewportView(table);
         
         bottomToolBar = new JToolBar();
-        bottomToolBar.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        bottomToolBar.setBorder(null);
         bottomToolBar.setFloatable(false);
         frmVotingParticipants.getContentPane().add(bottomToolBar, BorderLayout.SOUTH);
-        
+        bottomToolBar.add(Box.createHorizontalGlue());
         btnDisplayResults = bottomToolBar.add(displayResultsAction);
+        btnDisplayResults.setText("Display Results");
         btnDisplayResults.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 displayResults();
