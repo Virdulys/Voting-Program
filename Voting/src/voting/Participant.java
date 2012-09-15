@@ -16,11 +16,11 @@ public class Participant implements Comparable<Participant>{
     private String participantName;
     private String teamName;
     
-    public BufferedImage buffImage;
-    public int lastPos;
-    public int newPos;
-    public int y;
-    public  Timeline animateTimeline;
+    private BufferedImage buffImage;
+    private int lastPos;
+    private int newPos;
+    private int y;
+    private  Timeline animateTimeline;
     
     public Participant(String participantName, String teamName, int points) {
         super();
