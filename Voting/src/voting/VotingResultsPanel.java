@@ -144,8 +144,8 @@ public class VotingResultsPanel extends JPanel implements Runnable{
         g2d.setRenderingHints(rh);
         
         for (int i = 0; i < participantsSorted.size(); i++) {
-            if (participantsSorted.get(i).BuffImage != null){
-                g2d.drawImage(participantsSorted.get(i).BuffImage, null, entryLeftSpacing,
+            if (participantsSorted.get(i).buffImage != null){
+                g2d.drawImage(participantsSorted.get(i).buffImage, null, entryLeftSpacing,
                         participantsSorted.get(i).getY());
             }
         }

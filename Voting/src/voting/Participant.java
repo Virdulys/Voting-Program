@@ -16,9 +16,9 @@ public class Participant implements Comparable<Participant>{
     private String participantName;
     private String teamName;
     
-    public BufferedImage BuffImage;
-    public int LastPos;
-    public int NewPos;
+    public BufferedImage buffImage;
+    public int lastPos;
+    public int newPos;
     public int y;
     public  Timeline animateTimeline;
     
@@ -43,16 +43,16 @@ public class Participant implements Comparable<Participant>{
     }
     
     public int getNewPos() {
-        return NewPos;
+        return newPos;
     }
     public void setNewPos(int newPos) {
-        NewPos = newPos;
+        this.newPos = newPos;
     }
     public int getLastPos() {
-        return LastPos;
+        return lastPos;
     }
     public void setLastPos(int lastPos) {
-        LastPos = lastPos;
+        this.lastPos = lastPos;
     }
     public int getY() {
         return y;
@@ -62,10 +62,10 @@ public class Participant implements Comparable<Participant>{
         this.y = y;
     }
     public BufferedImage getBuffImage() {
-        return BuffImage;
+        return buffImage;
     }
     public void setBuffImage(BufferedImage buffImage) {
-        BuffImage = buffImage;
+        this.buffImage = buffImage;
     }
 
     public int getPoints() {
