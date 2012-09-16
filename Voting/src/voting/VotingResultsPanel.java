@@ -10,14 +10,14 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.image.BufferedImage;
 import java.util.Collections;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
 public class VotingResultsPanel extends JPanel implements Runnable {
 
-    private Vector<Participant> participants;
-    private Vector<Participant> participantsSorted;
+    private ArrayList<Participant> participants;
+    private ArrayList<Participant> participantsSorted;
     private boolean refresh = true; //Variable for forcing rerunning of refresh
     private boolean animate = true; //Variable for forcing rerunning of animation
     private boolean initDone = false; //Variable stops rendering of participants, until initialize is done.
@@ -32,7 +32,7 @@ public class VotingResultsPanel extends JPanel implements Runnable {
     private int delay = 50; //Thread delay
     
 
-    public VotingResultsPanel(Vector<Participant> participants) {
+    public VotingResultsPanel(ArrayList<Participant> participants) {
         
         this.participants = participants;
         setBackground(Color.DARK_GRAY);
@@ -119,7 +119,9 @@ public class VotingResultsPanel extends JPanel implements Runnable {
                 participants.get(i).setBuffImage(offImage);
             }       
             //Create a shallow copy of participants list
-            participantsSorted = (Vector<Participant>) participants.clone();
+            //participantsSorted = cloneParticipants(participants);
+            participantsSorted = new ArrayList<Participant>(participants);
+            //participantsSorted = (ArrayList) participants.clone();
             //Sort that shallow copy, so that we don't mess up original list
             Collections.sort(participantsSorted, Collections.reverseOrder());
             

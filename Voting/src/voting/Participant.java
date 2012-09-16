@@ -11,7 +11,7 @@ import org.pushingpixels.trident.Timeline;
  * @author Vytautas
  *
  */
-public class Participant implements Comparable<Participant>{
+public class Participant implements Comparable<Participant> {
     private int points;
     private String participantName;
     private String teamName;   

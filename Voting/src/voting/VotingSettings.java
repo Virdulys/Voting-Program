@@ -6,7 +6,7 @@ import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -32,22 +32,9 @@ public class VotingSettings {
     private JFrame frmVotingParticipants;
     private JMenuBar menuBar;
     private JMenu mnMenu;
-    private JMenuItem mntmAddParticipant;
-    private Vector<Participant> participants = new Vector<Participant>();
-    private JMenuItem mntmRemoveSelectedParticipants;
-    private DefaultTableModel model = new DefaultTableModel(
-                null,
-                new String[] {
-                    "Name", "Team", "Points", "Total"
-                }
-            ) {
-                Class[] columnTypes = new Class[] {
-                    String.class, String.class, Integer.class, Integer.class
-                };
-                public Class getColumnClass(int columnIndex) {
-                    return columnTypes[columnIndex];
-                }
-            };
+    private ArrayList<Team> teams = new ArrayList<Team>();
+    private ArrayList<Participant> participants = new ArrayList<Participant>();
+    private DefaultTableModel model = null;
     private JToolBar toolBar;
     private JScrollPane scrollPane;
     private JTable table;
@@ -55,14 +42,30 @@ public class VotingSettings {
     private JButton btnAddParticipant;
     private final Action removeSelectedAction = new RemoveSelectedAction();
     private JButton btnRemoveParticipants;
-    private final Action displayResultsAction = new SwingAction();
+    private final Action displayResultsAction = new DisplayResultsAction();
     private JButton btnDisplayResults;
     private JSeparator separator;
+    private JMenuItem mntmManageTeams;
+    private final Action manageTeamsAction = new ManageTeamsAction();
 
     /**
      * Create the application.
      */
     public VotingSettings() {
+        this.model = new DefaultTableModel(
+                null,
+                new String[] {
+                    "Name", "Team", "Points", "Total"
+                }
+            ) {
+                //private static final long serialVersionUID = 8156207888181129045L;
+                Class[] columnTypes = new Class[] {
+                    String.class, String.class, Integer.class, Integer.class
+                };
+                public Class getColumnClass(int columnIndex) {
+                    return columnTypes[columnIndex];
+                }
+            };
         initialize();
     }
 
@@ -102,8 +105,6 @@ public class VotingSettings {
         
         menuBar = new JMenuBar();
         frmVotingParticipants.setJMenuBar(menuBar);
-        
-        //TODO button with action call to displayResults()
         
         toolBar = new JToolBar();
         toolBar.setFocusable(false);
@@ -183,32 +184,29 @@ public class VotingSettings {
         mnMenu.setActionCommand("Menu");
         menuBar.add(mnMenu);
         
-        mntmAddParticipant = new JMenuItem("Add participant");
+        mntmManageTeams = new JMenuItem("Manage Teams");
+        mntmManageTeams.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                ManageTeams manageTeams = new ManageTeams(null, teams);
+                ArrayList<Team> tempTeams = manageTeams.showDialog();
+
+                if (tempTeams != null)
+                    teams = cloneTeams(tempTeams);
+            }
+        });
+        mntmManageTeams.setAction(manageTeamsAction);
+        mnMenu.add(mntmManageTeams);
         final AddParticipant participantDialog = new AddParticipant(frmVotingParticipants, true);
         participantDialog.pack();
-        mntmAddParticipant.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-                addParticipant();
-            }
-        });
-        mnMenu.add(mntmAddParticipant);
-        
-        mntmRemoveSelectedParticipants = new JMenuItem("Remove Selected Participants");
-        mntmRemoveSelectedParticipants.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-                removeSelected();
-            }
-        });
-        mnMenu.add(mntmRemoveSelectedParticipants);
     }
     
     public void addParticipant() {
         participants.add(new Participant("Vardas", "Komanda", 0));
         model.addRow(new Object[] {
-                participants.lastElement().getParticipantName(), 
-                participants.lastElement().getTeamName(), 
+                participants.get(participants.size()-1).getParticipantName(), 
+                participants.get(participants.size()-1).getTeamName(), 
                 null, 
-                participants.lastElement().getPoints()
+                participants.get(participants.size()-1).getPoints()
                 });
     }
     
@@ -271,12 +269,37 @@ public class VotingSettings {
         votingResults.setVisible(true);
     }
     
-    private class SwingAction extends AbstractAction {
-        public SwingAction() {
-            putValue(NAME, "SwingAction");
-            putValue(SHORT_DESCRIPTION, "Some short description");
+    private class DisplayResultsAction extends AbstractAction {
+        public DisplayResultsAction() {
+            putValue(NAME, "DisplayResultsAction");
+            putValue(SHORT_DESCRIPTION, "Display/refresh results");
         }
         public void actionPerformed(ActionEvent e) {
         }
+    }
+
+    public ArrayList<Team> getTeams() {
+        return teams;
+    }
+
+    public void setTeams(ArrayList<Team> teams) {
+        this.teams = teams;
+    }
+    private class ManageTeamsAction extends AbstractAction {
+        public ManageTeamsAction() {
+            putValue(NAME, "ManageTeamsAction");
+            putValue(SHORT_DESCRIPTION, "Manage teams");
+        }
+        public void actionPerformed(ActionEvent e) {
+        }
+    }
+    
+    public static ArrayList<Team> cloneTeams (ArrayList<Team> teams) {
+        ArrayList<Team> clonedList = new ArrayList<Team>();
+        
+        for (Team currentTeam : teams) {
+            clonedList.add(new Team(currentTeam));
+        }
+        return clonedList;
     }
 }
