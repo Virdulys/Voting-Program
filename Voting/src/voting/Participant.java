@@ -14,7 +14,8 @@ import org.pushingpixels.trident.Timeline;
 public class Participant implements Comparable<Participant> {
     private int points;
     private String participantName;
-    private String teamName;   
+    private String teamName; 
+    private Team team = null;
     
     //Animation variables
     private BufferedImage buffImage; // We keep generated entry for painting here
@@ -96,6 +97,14 @@ public class Participant implements Comparable<Participant> {
     @Override
     public int compareTo(Participant arg0) {
         return this.getPoints() - arg0.getPoints() ;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
     }
     
 

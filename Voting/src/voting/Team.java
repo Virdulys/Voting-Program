@@ -1,10 +1,13 @@
 package voting;
 
+import java.util.ArrayList;
+
 public class Team {
     
     // Team properties
     private String name = null;
     private int points = 0;
+    private ArrayList<Participant> members = new ArrayList<Participant>();
 
     public Team() {
         super();
@@ -41,5 +44,13 @@ public class Team {
 
     public void setPoints(int points) {
         this.points = points;
+    }
+
+    public ArrayList<Participant> getMembers() {
+        return members;
+    }
+
+    public void addMember(Participant member) {
+        this.members.add(member);
     }
 }

@@ -45,12 +45,12 @@ public class ManageTeams extends JDialog {
         model = new DefaultTableModel (
                     null,
                     new String[] {
-                        "Team Name", "Points"
+                        "Team Name"/*, "Points"*/
                     }
                 ) {
                    // private static final long serialVersionUID = 4816355992389917338L;
                     Class[] columnTypes = new Class[] {
-                        String.class, Integer.class
+                        String.class/*, Integer.class*/
                     };
                     public Class getColumnClass(int columnIndex) {
                         return columnTypes[columnIndex];
@@ -171,7 +171,7 @@ public class ManageTeams extends JDialog {
                 
                 table = new JTable();
                 table.setModel(model);
-                table.getColumnModel().getColumn(1).setMaxWidth(75);
+                //table.getColumnModel().getColumn(1).setMaxWidth(75);
                 scrollPane.setViewportView(table);
             }
         }
@@ -217,7 +217,13 @@ public class ManageTeams extends JDialog {
     public void removeSelected() {
         int numRows = table.getSelectedRows().length;
         for (int i = 0; i < numRows; i++) {
-            teams.remove(table.getSelectedRow());
+            Team toRemove = teams.remove(table.getSelectedRow());
+            
+            for (int j = 0; j < toRemove.getMembers().size(); j++) {
+                toRemove.getMembers().get(j).setTeam(null);
+            }
+            
+            toRemove = null;
             model.removeRow(table.getSelectedRow());
         }
     }
