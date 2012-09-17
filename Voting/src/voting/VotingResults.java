@@ -1,24 +1,23 @@
 package voting;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
 public class VotingResults extends JFrame{
 
-    private Vector<Participant> participants;
+    private ArrayList<Participant> participants;
     private VotingResultsPanel resultsPanel;
     
-    public  VotingResults(Vector<Participant> participants) {
+    public  VotingResults(ArrayList<Participant> participants) {
         resultsPanel = new VotingResultsPanel(participants);
         add(resultsPanel);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(400, 280);
         setLocationRelativeTo(null);
-        setVisible(true);
+        //setVisible(true);
     }
 
-    public void setParticipants(Vector<Participant> participants) {
+    public void setParticipants(ArrayList<Participant> participants) {
         this.participants = participants;
     }
     
