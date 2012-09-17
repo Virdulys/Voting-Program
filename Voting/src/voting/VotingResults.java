@@ -10,7 +10,8 @@ public class VotingResults extends JFrame{
     private VotingResultsPanel resultsPanel;
     
     public  VotingResults(ArrayList<Participant> participants) {
-        resultsPanel = new VotingResultsPanel(participants);
+        pack();
+        resultsPanel = new VotingResultsPanel(participants, this);
         add(resultsPanel);
         setSize(400, 280);
         setLocationRelativeTo(null);
@@ -32,5 +33,4 @@ public class VotingResults extends JFrame{
     public void setResultsPanel(VotingResultsPanel resultsPanel) {
         this.resultsPanel = resultsPanel;
     }
-    
 }

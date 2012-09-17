@@ -30,10 +30,11 @@ public class VotingResultsPanel extends JPanel implements Runnable {
     private final int DURATION = 300; // Participants sorting animation duration
     private String FONT = "Times"; // Font name
     private int delay = 50; //Thread delay
+    private VotingResults parent = null;
     
 
-    public VotingResultsPanel(ArrayList<Participant> participants) {
-        
+    public VotingResultsPanel(ArrayList<Participant> participants, VotingResults parent) {
+        this.parent = parent;
         this.participants = participants;
         setBackground(Color.DARK_GRAY);
         setDoubleBuffered(true);
@@ -92,15 +93,16 @@ public class VotingResultsPanel extends JPanel implements Runnable {
                 
                 //Screen, entry, font calculations from screen resolution
                 int screenRes = Toolkit.getDefaultToolkit().getScreenResolution();
-                int fontSize = (int)Math.round(30.0 * screenRes / 72.0);    
-                entryWidth = getSize().width - 40;
-                entryHeight = (int)Math.round(screenRes / 150.0)+50;
+                int fontSize = (int)Math.round(30.0 * screenRes / 72.0);  //TODO find out how to achieve max width of window wihout offsets  
+                entryWidth = parent.getWidth() - 40;
+                this.setSize(parent.getWidth(), parent.getHeight());
+                entryHeight = (int)Math.round(screenRes / 150.0)+100;
                 
                 //Creating an entry - image, from participants data 
                 BufferedImage offImage = new BufferedImage(entryWidth,
                         entryHeight, BufferedImage.TYPE_INT_ARGB);
                 //Getting image drawing graphics
-                Graphics2D g2 = offImage.createGraphics(); 
+                Graphics2D g2 = offImage.createGraphics();
                 g2.setRenderingHints(rh);
                 //Setting entries background color 
                 g2.setPaint(Color.GRAY);
@@ -111,10 +113,10 @@ public class VotingResultsPanel extends JPanel implements Runnable {
                 g2.setFont(theFont);
                 //Drawing participants data into entry
                 //Here are some hard coded value to leave spacing from left side and top (20, 20)
-                g2.drawString(participants.get(i).getParticipantName(), 20, 40);
+                g2.drawString(participants.get(i).getParticipantName(), 0, 40);
                 //Here are some hard coded value to leave spacing from left side and top (entryWidth -50, 20)
-                g2.drawString("" + participants.get(i).getPoints(),
-                        +entryWidth - 50, 40);
+                g2.drawString(String.valueOf(participants.get(i).getPoints()),
+                        + entryWidth - 30 * String.valueOf(participants.get(i).getPoints()).length(), 40); //TODO make number offsets equal from the right
                 //Setting drawn image to participants data
                 participants.get(i).setBuffImage(offImage);
             }       
