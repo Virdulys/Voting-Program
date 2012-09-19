@@ -44,7 +44,7 @@ public class VotingResults extends JFrame implements KeyListener {
         //pack();
         //add(resultsPanel);
         //setSize(400, 280);
-        setLocationRelativeTo(null);
+        //setLocationRelativeTo(null);
         validate();
     }
 
@@ -69,11 +69,14 @@ public class VotingResults extends JFrame implements KeyListener {
         GraphicsEnvironment ge = GraphicsEnvironment
             .getLocalGraphicsEnvironment();
         GraphicsDevice[] gs = ge.getScreenDevices();
+        Toolkit toolkit =  Toolkit.getDefaultToolkit ();
+        Dimension screenSize = toolkit.getScreenSize();
         if( screen > -1 && screen < gs.length )
         {
             setUndecorated(fullscreen);
             setResizable(!fullscreen);
             gs[screen].setFullScreenWindow( this );
+            //setBounds(0, 0, 1024, 600);
         }
         else if( gs.length > 0 )
         {
