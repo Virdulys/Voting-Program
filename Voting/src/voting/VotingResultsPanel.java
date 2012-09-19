@@ -170,7 +170,6 @@ public class VotingResultsPanel extends JPanel implements Runnable {
     }
 
     public void refreshResults() {
-        setBounds(parent.getBounds());
         refresh = true;     
     }
     
