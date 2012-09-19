@@ -34,7 +34,7 @@ public class Participant implements Comparable<Participant> {
     public Participant() {
         super();
     }
-    
+        
     //Here we initialize the animation from oldPos to newPos
     public void animatePos(int start, int end, int duration) {
         this.animateTimeline = new Timeline(this); //We create new Timeline
