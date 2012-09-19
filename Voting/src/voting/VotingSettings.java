@@ -1,12 +1,14 @@
 package voting;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -25,6 +27,7 @@ import javax.swing.UIManager;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
 public class VotingSettings {
     
@@ -47,6 +50,7 @@ public class VotingSettings {
     private JSeparator separator;
     private JMenuItem mntmManageTeams;
     private final Action manageTeamsAction = new ManageTeamsAction();
+    private boolean resultsFullscreen = false;
 
     /**
      * Create the application.
@@ -177,8 +181,11 @@ public class VotingSettings {
         
         //bottomToolBar.add(Box.createHorizontalGlue());
         
+        
+        // Table column setup
         table.getColumnModel().getColumn(3).setMaxWidth(75);
         table.getColumnModel().getColumn(2).setMaxWidth(75);
+        refreshTeams();
         
         mnMenu = new JMenu("Menu");
         mnMenu.setActionCommand("Menu");
@@ -192,6 +199,8 @@ public class VotingSettings {
 
                 if (tempTeams != null)
                     teams = cloneTeams(tempTeams);
+                
+                refreshTeams();
             }
         });
         mntmManageTeams.setAction(manageTeamsAction);
@@ -208,6 +217,8 @@ public class VotingSettings {
                 null, 
                 participants.get(participants.size()-1).getPoints()
                 });
+        table.validate();
+        table.repaint();
     }
     
     public void removeSelected() {
@@ -216,6 +227,8 @@ public class VotingSettings {
             participants.remove(table.getSelectedRow());
             model.removeRow(table.getSelectedRow());
         }
+        table.validate();
+        table.repaint();
     }
     
     public void showParticipants() {
@@ -263,7 +276,7 @@ public class VotingSettings {
     // Use this method in refresh button
     private void displayResults() {
         if (votingResults == null)
-            votingResults = new VotingResults(participants);
+            votingResults = new VotingResults(this, participants);
         else
             votingResults.refreshResults();
         votingResults.setVisible(true);
@@ -287,7 +300,7 @@ public class VotingSettings {
     }
     private class ManageTeamsAction extends AbstractAction {
         public ManageTeamsAction() {
-            putValue(NAME, "ManageTeamsAction");
+            putValue(NAME, "Manage Teams");
             putValue(SHORT_DESCRIPTION, "Manage teams");
         }
         public void actionPerformed(ActionEvent e) {
@@ -301,5 +314,30 @@ public class VotingSettings {
             clonedList.add(new Team(currentTeam));
         }
         return clonedList;
+    }
+    
+    public void refreshTeams() {
+        TableColumn col = table.getColumnModel().getColumn(1);
+        Vector<String> values = new Vector<String>();
+        values.add(null);
+        for (int i = 0; i < teams.size(); i++)
+            values.add(teams.get(i).getName());
+        
+        col.setCellEditor(new CellComboBoxEditor(values));
+        CellComboBoxRenderer comboBox = new CellComboBoxRenderer(values);
+        comboBox.setForeground(Color.WHITE);
+        col.setCellRenderer(new CellComboBoxRenderer(values));
+        
+        table.validate();
+        table.repaint();
+    }
+    
+    public void toggleResultsFullscreen() {
+        resultsFullscreen = !resultsFullscreen;
+        VotingResults tempPanel = new VotingResults(this, votingResults.getResultsPanel(), resultsFullscreen);;
+        votingResults.setVisible(false);
+        votingResults.dispose();
+        votingResults = tempPanel;
+        votingResults.setVisible(true);
     }
 }
