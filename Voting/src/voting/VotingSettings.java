@@ -9,11 +9,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Vector;
-
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -28,6 +28,26 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+
+//XML parsers imports
+import java.io.File;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+ 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+//File chooser
+import javax.swing.filechooser.*;
 
 public class VotingSettings {
     
@@ -210,7 +230,11 @@ public class VotingSettings {
     }
     
     public void addParticipant() {
-        participants.add(new Participant("Vardas", "Komanda", 0));
+        addParticipant("Vardas", "Komanda", 0);
+    }
+    
+    public void addParticipant(String name, String komanda, int points) {
+        participants.add(new Participant(name, komanda, points));
         model.addRow(new Object[] {
                 participants.get(participants.size()-1).getParticipantName(), 
                 participants.get(participants.size()-1).getTeamName(), 
@@ -227,6 +251,15 @@ public class VotingSettings {
             participants.remove(table.getSelectedRow());
             model.removeRow(table.getSelectedRow());
         }
+        table.validate();
+        table.repaint();
+    }
+    
+    public void removeParticipants() {
+        for (int i = 0; i < participants.size(); i++) {
+            model.removeRow(0);
+        }
+        participants.clear();
         table.validate();
         table.repaint();
     }
@@ -340,4 +373,115 @@ public class VotingSettings {
         votingResults = tempPanel;
         votingResults.setVisible(true);
     }
+    //TODO by Shabas implement auto backup
+    private void saveParticipants() {
+        try {
+            DocumentBuilderFactory docFactory = DocumentBuilderFactory
+                    .newInstance();
+            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+
+            // root elements
+            Document doc = docBuilder.newDocument();
+            Element rootElement = doc.createElement("tournament");
+            doc.appendChild(rootElement);
+            for (int i =0; i< participants.size(); i++) {   
+                // participants elements
+                Element staff = doc.createElement("participant");
+                rootElement.appendChild(staff);
+    
+                // set attribute to staff element
+                staff.setAttribute("id", Integer.toString(i));
+    
+                // participants name elements
+                Element name = doc.createElement("name");
+                name.appendChild(doc.createTextNode(participants.get(i).getParticipantName()));
+                staff.appendChild(name);
+    
+                // points elements
+                Element points = doc.createElement("points");
+                points.appendChild(doc.createTextNode(Integer.toString(participants.get(i).getPoints())));
+                staff.appendChild(points);
+            }
+
+            // write the content into xml file
+            TransformerFactory transformerFactory = TransformerFactory
+                    .newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource source = new DOMSource(doc);
+            
+            StreamResult result; //Outputter
+            
+            JFileChooser fc = new JFileChooser();
+            //XML file filter
+            FileNameExtensionFilter xmlfilter = new FileNameExtensionFilter(
+                    "xml files (*.xml)", "xml");
+            fc.addChoosableFileFilter(xmlfilter);
+            //Setting dialogs parent and showing it up
+            int returnVal = fc.showSaveDialog(frmVotingParticipants); 
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                File file = fc.getSelectedFile();
+                //CHeking if file extension is xml
+                String fileName = file.getAbsoluteFile().toString();
+                if (!fileName.endsWith(".xml"))
+                    file = new File(fileName + ".xml");   
+                
+                result = new StreamResult(file);
+                System.out.println("Opening: " + file.getName() + ".");
+            } else 
+                //If file has not been chosen default backup will be saved
+                result = new StreamResult(new File(System.getProperty("user.dir")+"\\backup.xml"));
+
+            transformer.transform(source, result);
+        } catch (ParserConfigurationException pce) {
+            pce.printStackTrace();
+        } catch (TransformerException tfe) {
+            tfe.printStackTrace();
+        }
+    }
+    
+    private void openParticipants() {
+        JFileChooser fc = new JFileChooser();
+        // XML file filter
+        FileNameExtensionFilter xmlfilter = new FileNameExtensionFilter(
+                "xml files (*.xml)", "xml");
+        fc.addChoosableFileFilter(xmlfilter);
+        // Setting dialogs parent and showing it up
+        int returnVal = fc.showOpenDialog(frmVotingParticipants);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = fc.getSelectedFile();
+            String fileName = file.getAbsoluteFile().toString();
+            if (fileName.endsWith(".xml"))
+                try {
+                    DocumentBuilderFactory dbFactory = DocumentBuilderFactory
+                            .newInstance();
+                    DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+                    Document doc = dBuilder.parse(file);
+                    doc.getDocumentElement().normalize();
+                    if (doc.getDocumentElement().getNodeName() == "tournament");
+                    
+                    removeParticipants();                
+                    
+                    NodeList nList = doc.getElementsByTagName("participant");
+                    for (int temp = 0; temp < nList.getLength(); temp++) {
+                        Node nNode = nList.item(temp);
+                        if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                           Element eElement = (Element) nNode;
+                           System.out.println("Name : " + getTagValue("name", eElement));                       
+                           System.out.println("Points: " + getTagValue("points", eElement));
+                           //TODO by Shabas implement team reading and creation
+                           //For now, we write default "Komanda"
+                           addParticipant(getTagValue("name", eElement), "Komanda", Integer.parseInt(getTagValue("points", eElement)));
+                        }
+                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+        }
+    }
+    private  String getTagValue(String sTag, Element eElement) {
+        NodeList nlList = eElement.getElementsByTagName(sTag).item(0).getChildNodes();
+        Node nValue = (Node) nlList.item(0);
+        return nValue.getNodeValue();
+      }
+    
 }
