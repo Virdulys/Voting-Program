@@ -19,6 +19,8 @@ public class VotingResults extends JFrame implements KeyListener {
     
     private ArrayList<Participant> participants;
     private VotingResultsPanel resultsPanel;
+    private int standardFormWidth = 400;
+    private int standardFormHeight = 280;
     
     public  VotingResults(VotingSettings parent, ArrayList<Participant> participants) {
         addKeyListener(this);
@@ -27,7 +29,7 @@ public class VotingResults extends JFrame implements KeyListener {
         this.resultsPanel = new VotingResultsPanel(participants, this);
         add(resultsPanel, BorderLayout.CENTER);
         //pack();
-        setSize(400, 280);
+        setSize(standardFormWidth, standardFormHeight);
         setLocationRelativeTo(null);
         validate();
     }
@@ -69,20 +71,29 @@ public class VotingResults extends JFrame implements KeyListener {
         GraphicsEnvironment ge = GraphicsEnvironment
             .getLocalGraphicsEnvironment();
         GraphicsDevice[] gs = ge.getScreenDevices();
-        Toolkit toolkit =  Toolkit.getDefaultToolkit ();
-        Dimension screenSize = toolkit.getScreenSize();
         if( screen > -1 && screen < gs.length )
         {
             setUndecorated(fullscreen);
             setResizable(!fullscreen);
-            gs[screen].setFullScreenWindow( this );
-            //setBounds(0, 0, 1024, 600);
+            if (fullscreen)
+                gs[screen].setFullScreenWindow( this );
+            else {
+              //We don't need to setFullScreenWindow when there is no need for full screen
+                setSize(standardFormWidth, standardFormHeight); 
+                setLocationRelativeTo(null); // return to center of the screen
+            }
         }
         else if( gs.length > 0 )
         {
             setUndecorated(fullscreen);
             setResizable(!fullscreen);
-            gs[0].setFullScreenWindow( this );
+            if (fullscreen)
+                gs[screen].setFullScreenWindow( this );
+            else {
+              //We don't need to setFullScreenWindow when there is no need for full screen
+                setSize(standardFormWidth, standardFormHeight); 
+                setLocationRelativeTo(null); //Return to center of the screen
+            }
         }
         else
         {
