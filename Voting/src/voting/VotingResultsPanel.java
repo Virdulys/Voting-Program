@@ -118,7 +118,7 @@ public class VotingResultsPanel extends JPanel implements Runnable {
                 g2.drawString(participants.get(i).getParticipantName(), 20, 20);
                 //Here are some hard coded value to leave spacing from left side and top (entryWidth -50, 20)
                 g2.drawString(String.valueOf(participants.get(i).getPoints()),
-                        +  entryWidth - fontMetrics.stringWidth(String.valueOf(participants.get(i).getPoints())), 20); //TODO make number offsets equal from the right
+                        +  entryWidth - 20 - fontMetrics.stringWidth(String.valueOf(participants.get(i).getPoints())), 20); //TODO make number offsets equal from the right
                 //Setting drawn image to participants data
                 participants.get(i).setBuffImage(offImage);
             }       
@@ -170,11 +170,20 @@ public class VotingResultsPanel extends JPanel implements Runnable {
     }
 
     public void refreshResults() {
+        setBounds(parent.getBounds());
         refresh = true;     
     }
     
     //Method that calculates y coordinates based on participants position
     public int posToY (int pos) {
         return entryTopSpacing * (pos + 1) + entryHeight * pos;
+    }
+
+    public VotingResults getParent() {
+        return parent;
+    }
+
+    public void setParent(VotingResults parent) {
+        this.parent = parent;
     }
 }

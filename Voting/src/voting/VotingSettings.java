@@ -50,6 +50,7 @@ public class VotingSettings {
     private JSeparator separator;
     private JMenuItem mntmManageTeams;
     private final Action manageTeamsAction = new ManageTeamsAction();
+    private boolean resultsFullscreen = false;
 
     /**
      * Create the application.
@@ -275,7 +276,7 @@ public class VotingSettings {
     // Use this method in refresh button
     private void displayResults() {
         if (votingResults == null)
-            votingResults = new VotingResults(participants);
+            votingResults = new VotingResults(this, participants);
         else
             votingResults.refreshResults();
         votingResults.setVisible(true);
@@ -329,5 +330,14 @@ public class VotingSettings {
         
         table.validate();
         table.repaint();
+    }
+    
+    public void toggleResultsFullscreen() {
+        resultsFullscreen = !resultsFullscreen;
+        VotingResults tempPanel = new VotingResults(this, votingResults.getResultsPanel(), resultsFullscreen);;
+        votingResults.setVisible(false);
+        votingResults.dispose();
+        votingResults = tempPanel;
+        votingResults.setVisible(true);
     }
 }
