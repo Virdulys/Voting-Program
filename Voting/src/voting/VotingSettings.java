@@ -19,6 +19,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
@@ -43,7 +44,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import javax.swing.JMenuItem;
+
+import voting.settings.ResultsNumber;
 
 public class VotingSettings {
     /* FIXME Teams (develop): teams are still not assigned to participants via drop-down lists in the table view.
@@ -74,6 +76,8 @@ public class VotingSettings {
     private JMenu mnSettings;
     private JMenu mnHelp;
     private JMenuItem mntmResultDisplay;
+    private ResultsNumber resultsNumberDialog = null;
+    private int resultsNumber = 10;
     // FIXME Teams (uncomment): base team management variables
     /*private JMenuItem mntmManageTeams;
     private final Action manageTeamsAction = new ManageTeamsAction();
@@ -271,14 +275,18 @@ public class VotingSettings {
     
     private class EditListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            System.out.println(e.getActionCommand());
+            //System.out.println(e.getActionCommand());
             if (e.getActionCommand().equals("Save"))
                 saveParticipants();
             else if (e.getActionCommand().equals("Load")) {
                 openParticipants();
             }
             else if (e.getActionCommand().equals("Result Display")) {
-                openParticipants();
+                if (resultsNumberDialog == null)
+                    resultsNumberDialog = new ResultsNumber(resultsNumber);
+                resultsNumber = resultsNumberDialog.showDialog();
+                //FIXME Number of results: send this number to result display
+                
             }
         }
     }
