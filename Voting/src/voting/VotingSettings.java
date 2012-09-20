@@ -233,8 +233,8 @@ public class VotingSettings {
         addParticipant("Vardas", "Komanda", 0);
     }
     
-    public void addParticipant(String name, String komanda, int points) {
-        participants.add(new Participant(name, komanda, points));
+    public void addParticipant(String name, String team, int points) {
+        participants.add(new Participant(name, team, points));
         model.addRow(new Object[] {
                 participants.get(participants.size()-1).getParticipantName(), 
                 participants.get(participants.size()-1).getTeamName(), 
@@ -254,7 +254,7 @@ public class VotingSettings {
         table.validate();
         table.repaint();
     }
-    
+    //Cleans participants list and tables model
     public void removeParticipants() {
         for (int i = 0; i < participants.size(); i++) {
             model.removeRow(0);
@@ -478,6 +478,7 @@ public class VotingSettings {
                 }
         }
     }
+    //this methos is used by xml reader
     private  String getTagValue(String sTag, Element eElement) {
         NodeList nlList = eElement.getElementsByTagName(sTag).item(0).getChildNodes();
         Node nValue = (Node) nlList.item(0);
