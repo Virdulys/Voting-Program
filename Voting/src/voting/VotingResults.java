@@ -104,6 +104,9 @@ public class VotingResults extends JFrame implements KeyListener {
         //resultsPanel.refreshResults();
         //validate();
     }
+    public void setResultsNumber(int resultsNumber) {
+        resultsPanel.setResultsNumber(resultsNumber);
+    }
 
     @Override
     public void keyPressed(KeyEvent e) {
@@ -113,7 +116,6 @@ public class VotingResults extends JFrame implements KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_F11) {
-            //TODO call fullscreen method from here
             //showOnScreen(0, parent);
             // Call parent method to destroy me
             //manager.

@@ -284,9 +284,7 @@ public class VotingSettings {
             else if (e.getActionCommand().equals("Result Display")) {
                 if (resultsNumberDialog == null)
                     resultsNumberDialog = new ResultsNumber(resultsNumber);
-                resultsNumber = resultsNumberDialog.showDialog();
-                //FIXME Number of results: send this number to result display
-                
+                resultsNumber = resultsNumberDialog.showDialog();                
             }
         }
     }
@@ -376,7 +374,9 @@ public class VotingSettings {
             votingResults = new VotingResults(this, participants);
         else
             votingResults.refreshResults();
+        votingResults.setResultsNumber(resultsNumber);
         votingResults.setVisible(true);
+        saveParticipants(true);
     }
     
     private class DisplayResultsAction extends AbstractAction {
@@ -442,8 +442,12 @@ public class VotingSettings {
         votingResults = tempPanel;
         votingResults.setVisible(true);
     }
-    //TODO by Shabas implement auto backup
+    
     private void saveParticipants() {
+        saveParticipants(false);
+    }
+    //TODO by Shabas fix the xml file
+    private void saveParticipants(boolean backup) {
         try {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory
                     .newInstance();
@@ -480,26 +484,29 @@ public class VotingSettings {
             
             StreamResult result; //Outputter
             
-            JFileChooser fc = new JFileChooser();
-            //XML file filter
-            FileNameExtensionFilter xmlfilter = new FileNameExtensionFilter(
-                    "xml files (*.xml)", "xml");
-            fc.addChoosableFileFilter(xmlfilter);
-            //Setting dialogs parent and showing it up
-            int returnVal = fc.showSaveDialog(frmVotingParticipants); 
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                File file = fc.getSelectedFile();
-                //CHeking if file extension is xml
-                String fileName = file.getAbsoluteFile().toString();
-                if (!fileName.endsWith(".xml"))
-                    file = new File(fileName + ".xml");   
-                
-                result = new StreamResult(file);
-                System.out.println("Opening: " + file.getName() + ".");
-            } else 
-                //If file has not been chosen default backup will be saved
+            if (!backup) {
+                JFileChooser fc = new JFileChooser();
+                //XML file filter
+                FileNameExtensionFilter xmlfilter = new FileNameExtensionFilter(
+                        "xml files (*.xml)", "xml");
+                fc.addChoosableFileFilter(xmlfilter);
+                //Setting dialogs parent and showing it up
+                int returnVal = fc.showSaveDialog(frmVotingParticipants); 
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    File file = fc.getSelectedFile();
+                    //CHeking if file extension is xml
+                    String fileName = file.getAbsoluteFile().toString();
+                    if (!fileName.endsWith(".xml"))
+                        file = new File(fileName + ".xml");   
+                    
+                    result = new StreamResult(file);
+                    System.out.println("Opening: " + file.getName() + ".");
+                } else 
+                    //If file has not been chosen default backup will be saved
+                    result = new StreamResult(new File(System.getProperty("user.dir")+"\\backup.xml"));
+            }
+            else
                 result = new StreamResult(new File(System.getProperty("user.dir")+"\\backup.xml"));
-
             transformer.transform(source, result);
         } catch (ParserConfigurationException pce) {
             pce.printStackTrace();

@@ -25,14 +25,15 @@ public class VotingResultsPanel extends JPanel implements Runnable {
     private boolean initDone = false; //Variable stops rendering of participants, until initialize is done.
     private Thread animator;
     private RenderingHints rh;
-    private int entryHeight ; // Size of the entry (background + participants name + team + points)
-    private int entryWidth ; 
-    private int entryTopSpacing ; //Pixels to be left out from the top when painting participants
-    private int entrySideSpacing = 20; // Pixels to be left out from the left side when painting entries
+    private int entryHeight; // Size of the entry (background + participants name + team + points)
+    private int entryWidth; 
+    private int entryTopSpacing; //Pixels to be left out from the top when painting participants    
     private int entryCount;
     private int fontSize;
     private FontMetrics fontMetrics;
+    private int resultsNumber;
     //Hard coded values start here
+    private int entrySideSpacing = 20; // Pixels to be left out from the left side when painting entries
     private String FONT = "Times"; // Font name
     private final int DURATION = 300; // Participants sorting animation duration
     private int delay = 50; //Thread delay
@@ -98,7 +99,12 @@ public class VotingResultsPanel extends JPanel implements Runnable {
                 e.printStackTrace();
             }
             
-            entryCount = participants.size();
+            //With a help of this, we now can scale entryHeight with
+            //Setting -> resultsNumber!!!!!!!!!!!!!!
+            if (participants.size() >= resultsNumber)
+                entryCount = participants.size();
+            else
+                entryCount = resultsNumber;             
             //Top spacing is 15% of entry width
             entryTopSpacing = (getSize().height / entryCount) * 15 / 100; 
             entryHeight = (getSize().height  - entryTopSpacing * (entryCount+1)) / entryCount;
@@ -127,7 +133,10 @@ public class VotingResultsPanel extends JPanel implements Runnable {
                 g2.drawString(participants.get(i).getParticipantName(), 20, fontSize);
                 //Here are some hard coded value to leave spacing from left side and top (entryWidth -50, 20)
                 g2.drawString(String.valueOf(participants.get(i).getPoints()),
-                        +  entryWidth - 20 - fontMetrics.stringWidth(String.valueOf(participants.get(i).getPoints())), fontSize); //TODO make number offsets equal from the right
+                                + entryWidth - 20 - fontMetrics.stringWidth(
+                                        String.valueOf(participants.get(i).getPoints())),
+                                fontSize); 
+                //TODO We need to shorten this up, it looks just awful
                 //Setting drawn image to participants data
                 participants.get(i).setBuffImage(offImage);
             }       
@@ -165,12 +174,25 @@ public class VotingResultsPanel extends JPanel implements Runnable {
         if (initDone && !participants.isEmpty()) {
             Graphics2D g2d = (Graphics2D) g;
             g2d.setRenderingHints(rh);
+            
+            //Here we did such an awesome thing, that no comment can describe it!
+            //Ok ok i will try
+            //Here we can scale size with a help of setting -> resultsNumber!
+            int paintOffset = 0;
+            if (participantsSorted.size() > resultsNumber){
+                paintOffset = (getHeight() - ((entryHeight+entryTopSpacing) * resultsNumber))/2;
+            }
+            if (participantsSorted.size() < resultsNumber) {
+                paintOffset = (getHeight() - ((entryHeight+entryTopSpacing) * participantsSorted.size()))/2;
+            }
             //Here we go through the list of the participants and draw them on screen
             //We use shallow sorted copy to index them
             for (int i = 0; i < participantsSorted.size(); i++) {
+                if (i == resultsNumber)
+                    break;
                 if (participantsSorted.get(i).getBuffImage() != null){
                     g2d.drawImage(participantsSorted.get(i).getBuffImage(), null, entrySideSpacing,
-                            participantsSorted.get(i).getY());
+                            participantsSorted.get(i).getY() + paintOffset);
                 }
             }
             Toolkit.getDefaultToolkit().sync();
@@ -185,5 +207,8 @@ public class VotingResultsPanel extends JPanel implements Runnable {
     //Method that calculates y coordinates based on participants position
     public int posToY (int pos) {
         return entryTopSpacing * (pos + 1) + entryHeight * pos;
+    }
+    public void setResultsNumber(int resultsNumber) {
+        this.resultsNumber = resultsNumber;
     }
 }
