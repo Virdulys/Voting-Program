@@ -26,7 +26,7 @@ public class VotingResults extends JFrame implements KeyListener {
         addKeyListener(this);
         setLayout(new BorderLayout());
         this.parent = parent;
-        this.resultsPanel = new VotingResultsPanel(participants, this);
+        this.resultsPanel = new VotingResultsPanel(participants);
         add(resultsPanel, BorderLayout.CENTER);
         //pack();
         setSize(standardFormWidth, standardFormHeight);
@@ -39,7 +39,6 @@ public class VotingResults extends JFrame implements KeyListener {
         setLayout(new BorderLayout());
         this.parent = parent;
         this.resultsPanel = resultsPanel;
-        this.resultsPanel.setParent(this);
         add(resultsPanel, BorderLayout.CENTER);
         //setUndecorated(fullscreen);
         toggleFullscreen(0, fullscreen);
