@@ -78,6 +78,8 @@ public class VotingSettings {
     private JMenuItem mntmResultDisplay;
     private ResultsNumber resultsNumberDialog = null;
     private int resultsNumber = 10;
+    private JMenuItem mntmUsage;
+    private UsageDialog usageDialog;
     // FIXME Teams (uncomment): base team management variables
     /*private JMenuItem mntmManageTeams;
     private final Action manageTeamsAction = new ManageTeamsAction();
@@ -254,6 +256,12 @@ public class VotingSettings {
         mnHelp.setMnemonic('H');
         menuBar.add(mnHelp);
         
+        mntmUsage = new JMenuItem("Usage", KeyEvent.VK_U);
+        mntmResultDisplay.setMnemonic('U');
+        mntmUsage.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, Event.CTRL_MASK));
+        mntmUsage.addActionListener(mnListener);
+        mnHelp.add(mntmUsage);
+        
         //FIXME Teams (uncomment): enable team management menu item
         /*mntmManageTeams = new JMenuItem("Manage Teams");
         mntmManageTeams.addActionListener(new ActionListener() {
@@ -286,6 +294,12 @@ public class VotingSettings {
                     resultsNumberDialog = new ResultsNumber(resultsNumber);
                 resultsNumber = resultsNumberDialog.showDialog();
                 //FIXME Number of results: send this number to result display
+                
+            }
+            else if (e.getActionCommand().equals("Usage")) {
+                if (usageDialog == null)
+                    usageDialog = new UsageDialog();
+                usageDialog.setVisible(true);
                 
             }
         }
