@@ -14,7 +14,6 @@ import org.pushingpixels.trident.Timeline;
 public class Participant implements Comparable<Participant> {
     private int points;
     private String participantName;
-    private String teamName; 
     private Team team = null;
     
     //Animation variables
@@ -24,11 +23,10 @@ public class Participant implements Comparable<Participant> {
     private int y; //y coordinate is used for animating y values
     private  Timeline animateTimeline; //Animator
     
-    public Participant(String participantName, String teamName, int points) {
+    public Participant(String participantName, int points) {
         super();
         this.points = points;
         this.participantName = participantName;
-        this.teamName = teamName;
     }
     
     public Participant() {
@@ -84,14 +82,6 @@ public class Participant implements Comparable<Participant> {
 
     public void setParticipantName(String participantName) {
         this.participantName = participantName;
-    }
-
-    public String getTeamName() {
-        return teamName;
-    }
-
-    public void setTeamName(String teamName) {
-        this.teamName = teamName;
     }
     
     @Override

@@ -91,7 +91,6 @@ public class AddParticipant extends JDialog {
                     public void actionPerformed(ActionEvent e) {
                         participant = new Participant();
                         participant.setParticipantName(txtParticipantName.getText());
-                        participant.setTeamName(txtTeamName.getText());
                         participant.setPoints(Integer.parseInt(txtPoints.getText()));
                         dispose();
                         

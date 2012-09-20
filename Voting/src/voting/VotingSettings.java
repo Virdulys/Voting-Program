@@ -1,14 +1,16 @@
 package voting;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Event;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.io.File;
 import java.util.ArrayList;
-import java.util.Vector;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
@@ -22,16 +24,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
-
-//XML parsers imports
-import java.io.File;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -40,22 +39,25 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
- 
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-//File chooser
-import javax.swing.filechooser.*;
+import voting.settings.ResultsNumber;
 
 public class VotingSettings {
-    
+    /* FIXME Teams (develop): teams are still not assigned to participants via drop-down lists in the table view.
+     * Idea would be to assign teams from the team arrayList to the participants via team name position in drop-down as
+     * it basically represents them in the same order as in the arrayList. Also, display the participant team by the team
+     * position in team arrayList. For instance, team.get(0) is item #1 (0+1, cause 0 is always null so we can also unassign
+     * teams) in the team drop-down list.
+     * */
     private VotingResults votingResults = null;
     private JFrame frmVotingParticipants;
     private JMenuBar menuBar;
-    private JMenu mnMenu;
-    private ArrayList<Team> teams = new ArrayList<Team>();
+    private JMenu mnFileMenu;
     private ArrayList<Participant> participants = new ArrayList<Participant>();
     private DefaultTableModel model = null;
     private JToolBar toolBar;
@@ -68,9 +70,18 @@ public class VotingSettings {
     private final Action displayResultsAction = new DisplayResultsAction();
     private JButton btnDisplayResults;
     private JSeparator separator;
-    private JMenuItem mntmManageTeams;
-    private final Action manageTeamsAction = new ManageTeamsAction();
     private boolean resultsFullscreen = false;
+    private JMenuItem mntmSave;
+    private JMenuItem mntmLoad;
+    private JMenu mnSettings;
+    private JMenu mnHelp;
+    private JMenuItem mntmResultDisplay;
+    private ResultsNumber resultsNumberDialog = null;
+    private int resultsNumber = 10;
+    // FIXME Teams (uncomment): base team management variables
+    /*private JMenuItem mntmManageTeams;
+    private final Action manageTeamsAction = new ManageTeamsAction();
+    private ArrayList<Team> teams = new ArrayList<Team>();*/
 
     /**
      * Create the application.
@@ -79,12 +90,12 @@ public class VotingSettings {
         this.model = new DefaultTableModel(
                 null,
                 new String[] {
-                    "Name", "Team", "Points", "Total"
+                    "Name", /*"Team",*/ "Points", "Total"
                 }
             ) {
-                //private static final long serialVersionUID = 8156207888181129045L;
+                private static final long serialVersionUID = 8156207888181129045L;
                 Class[] columnTypes = new Class[] {
-                    String.class, String.class, Integer.class, Integer.class
+                    String.class, /*String.class,*/ Integer.class, Integer.class
                 };
                 public Class getColumnClass(int columnIndex) {
                     return columnTypes[columnIndex];
@@ -112,12 +123,12 @@ public class VotingSettings {
                         switch(column) {
                             case 0: participants.get(row).setParticipantName((String)model.getValueAt(row, column));
                                     break;
-                            case 1: participants.get(row).setTeamName((String)model.getValueAt(row, column));
+                            /*case 1: participants.get(row).getTeam().setName(((String)model.getValueAt(row, column)));
+                                    break;*/ // FIXME Team (uncomment): change the team name with the table value
+                            case 1: participants.get(row).setPoints(participants.get(row).getPoints() + (Integer)model.getValueAt(row, column));
+                                    model.setValueAt(participants.get(row).getPoints(), row, 2);
                                     break;
-                            case 2: participants.get(row).setPoints(participants.get(row).getPoints() + (Integer)model.getValueAt(row, column));
-                                    model.setValueAt(participants.get(row).getPoints(), row, 3);
-                                    break;
-                            case 3: participants.get(row).setPoints((Integer)model.getValueAt(row, column));
+                            case 2: participants.get(row).setPoints((Integer)model.getValueAt(row, column));
                                     break;
                             default: break;
                         }
@@ -201,17 +212,50 @@ public class VotingSettings {
         
         //bottomToolBar.add(Box.createHorizontalGlue());
         
-        
-        // Table column setup
-        table.getColumnModel().getColumn(3).setMaxWidth(75);
+        // FIXME Teams (uncomment): refresh teams on startup
+        /*table.getColumnModel().getColumn(3).setMaxWidth(75);
         table.getColumnModel().getColumn(2).setMaxWidth(75);
-        refreshTeams();
+         * refreshTeams();*/
         
-        mnMenu = new JMenu("Menu");
-        mnMenu.setActionCommand("Menu");
-        menuBar.add(mnMenu);
+        table.getColumnModel().getColumn(2).setMaxWidth(75);
+        table.getColumnModel().getColumn(1).setMaxWidth(75);
         
-        mntmManageTeams = new JMenuItem("Manage Teams");
+        mnFileMenu = new JMenu("File");
+        mnFileMenu.setMnemonic('F');
+        mnFileMenu.setActionCommand("Menu");
+        menuBar.add(mnFileMenu);
+        
+        //Save to xml menu item
+        EditListener mnListener = new EditListener();
+        mntmSave = new JMenuItem("Save", KeyEvent.VK_S);
+        mntmSave.setMnemonic('S');
+        mntmSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, Event.CTRL_MASK));
+        mntmSave.addActionListener(mnListener);
+        mnFileMenu.add(mntmSave);
+        
+        //Load to xml menu item
+        mntmLoad = new JMenuItem("Load", KeyEvent.VK_L);
+        mntmLoad.setMnemonic('L');
+        mntmLoad.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, Event.CTRL_MASK));
+        mntmLoad.addActionListener(mnListener);
+        mnFileMenu.add(mntmLoad);
+        
+        mnSettings = new JMenu("Settings");
+        mnSettings.setMnemonic('S');
+        menuBar.add(mnSettings);
+        
+        mntmResultDisplay = new JMenuItem("Result Display", KeyEvent.VK_R);
+        mntmResultDisplay.setMnemonic('R');
+        mntmResultDisplay.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, Event.CTRL_MASK));
+        mntmResultDisplay.addActionListener(mnListener);
+        mnSettings.add(mntmResultDisplay);
+        
+        mnHelp = new JMenu("Help");
+        mnHelp.setMnemonic('H');
+        menuBar.add(mnHelp);
+        
+        //FIXME Teams (uncomment): enable team management menu item
+        /*mntmManageTeams = new JMenuItem("Manage Teams");
         mntmManageTeams.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 ManageTeams manageTeams = new ManageTeams(null, teams);
@@ -226,19 +270,37 @@ public class VotingSettings {
         mntmManageTeams.setAction(manageTeamsAction);
         mnMenu.add(mntmManageTeams);
         final AddParticipant participantDialog = new AddParticipant(frmVotingParticipants, true);
-        participantDialog.pack();
+        participantDialog.pack();*/
+    }
+    
+    private class EditListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            //System.out.println(e.getActionCommand());
+            if (e.getActionCommand().equals("Save"))
+                saveParticipants();
+            else if (e.getActionCommand().equals("Load")) {
+                openParticipants();
+            }
+            else if (e.getActionCommand().equals("Result Display")) {
+                if (resultsNumberDialog == null)
+                    resultsNumberDialog = new ResultsNumber(resultsNumber);
+                resultsNumber = resultsNumberDialog.showDialog();
+                //FIXME Number of results: send this number to result display
+                
+            }
+        }
     }
     
     public void addParticipant() {
-        addParticipant("Vardas", "Komanda", 0);
+        addParticipant("Vardas", 0);
     }
     
-    public void addParticipant(String name, String team, int points) {
-        participants.add(new Participant(name, team, points));
+    public void addParticipant(String name, int points) {
+        participants.add(new Participant(name, points));
         model.addRow(new Object[] {
-                participants.get(participants.size()-1).getParticipantName(), 
-                participants.get(participants.size()-1).getTeamName(), 
-                null, 
+                participants.get(participants.size()-1).getParticipantName(),
+                /*participants.get(participants.size()-1).getTeam().getName(), */ // FIXME Teams (uncomment): puts team name into the table
+                null,
                 participants.get(participants.size()-1).getPoints()
                 });
         table.validate();
@@ -268,7 +330,7 @@ public class VotingSettings {
         if (!participants.isEmpty()) {
             int i = participants.size()-1;
             model.addRow(new Object[]{participants.get(i).getParticipantName(),
-                    participants.get(i).getTeamName(),
+                    /*participants.get(i).getTeam().getName(),*/ // FIXME Team (uncomment): get the team name
                     null,
                     participants.get(i).getPoints()});
         }
@@ -290,6 +352,7 @@ public class VotingSettings {
         this.votingResults = votingResults;
     }
     private class AddParticipantAction extends AbstractAction {
+        private static final long serialVersionUID = 2936011880058626644L;
         public AddParticipantAction() {
             putValue(NAME, "Add Participant");
             putValue(SHORT_DESCRIPTION, "Pridėti dalyvį");
@@ -298,6 +361,7 @@ public class VotingSettings {
         }
     }
     private class RemoveSelectedAction extends AbstractAction {
+        private static final long serialVersionUID = -5840893490829328162L;
         public RemoveSelectedAction() {
             putValue(NAME, "Remove Selected");
             putValue(SHORT_DESCRIPTION, "Ištrinti pasirinktus dalyvius");
@@ -316,6 +380,7 @@ public class VotingSettings {
     }
     
     private class DisplayResultsAction extends AbstractAction {
+        private static final long serialVersionUID = -4154716509114875596L;
         public DisplayResultsAction() {
             putValue(NAME, "DisplayResultsAction");
             putValue(SHORT_DESCRIPTION, "Display/refresh results");
@@ -324,7 +389,8 @@ public class VotingSettings {
         }
     }
 
-    public ArrayList<Team> getTeams() {
+    //FIXME Teams (uncomment): setter & getter, menu item action
+    /*public ArrayList<Team> getTeams() {
         return teams;
     }
 
@@ -338,18 +404,21 @@ public class VotingSettings {
         }
         public void actionPerformed(ActionEvent e) {
         }
-    }
+    }*/
     
-    public static ArrayList<Team> cloneTeams (ArrayList<Team> teams) {
+    // FIXME Teams (uncomment): custom method for cloning team arrayList
+    // Java clone api is somewhat buggy and wouldn't do any good here
+    /*public static ArrayList<Team> cloneTeams (ArrayList<Team> teams) {
         ArrayList<Team> clonedList = new ArrayList<Team>();
         
         for (Team currentTeam : teams) {
             clonedList.add(new Team(currentTeam));
         }
         return clonedList;
-    }
+    }*/
     
-    public void refreshTeams() {
+    // FIXME Teams (uncomment): refresh method, used after team management dialog returns something
+    /*public void refreshTeams() {
         TableColumn col = table.getColumnModel().getColumn(1);
         Vector<String> values = new Vector<String>();
         values.add(null);
@@ -363,7 +432,7 @@ public class VotingSettings {
         
         table.validate();
         table.repaint();
-    }
+    }*/
     
     public void toggleResultsFullscreen() {
         resultsFullscreen = !resultsFullscreen;
@@ -469,8 +538,8 @@ public class VotingSettings {
                            System.out.println("Name : " + getTagValue("name", eElement));                       
                            System.out.println("Points: " + getTagValue("points", eElement));
                            //TODO by Shabas implement team reading and creation
-                           //For now, we write default "Komanda"
-                           addParticipant(getTagValue("name", eElement), "Komanda", Integer.parseInt(getTagValue("points", eElement)));
+                           //For now, we write default "Komanda". Actually, we don't write anything :P
+                           addParticipant(getTagValue("name", eElement), Integer.parseInt(getTagValue("points", eElement)));
                         }
                      }
                 } catch (Exception e) {
@@ -478,7 +547,7 @@ public class VotingSettings {
                 }
         }
     }
-    //this methos is used by xml reader
+    //this method is used by xml reader
     private  String getTagValue(String sTag, Element eElement) {
         NodeList nlList = eElement.getElementsByTagName(sTag).item(0).getChildNodes();
         Node nValue = (Node) nlList.item(0);
