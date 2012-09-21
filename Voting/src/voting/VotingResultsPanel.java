@@ -5,15 +5,19 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Paint;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 public class VotingResultsPanel extends JPanel implements Runnable {
@@ -37,11 +41,21 @@ public class VotingResultsPanel extends JPanel implements Runnable {
     private String FONT = "Times"; // Font name
     private final int DURATION = 300; // Participants sorting animation duration
     private int delay = 50; //Thread delay
-    private Paint entryBackgroundColor = Color.GRAY;
+    private Paint entryBackgroundColor = Color.BLACK;
     private Paint entryFontColor = Color.CYAN;
     private Paint pointsFontColor = Color.PINK;
+    private Image background = null;
+    private BufferedImage backgroundBuff = null;
     
     public VotingResultsPanel(ArrayList<Participant> participants) {
+        /*try {
+            this.background = ImageIO.read(new File("/images/bg_dark.jpg"));
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }*/
+        Toolkit toolkit = this.getToolkit();
+        this.background = toolkit.getImage(this.getClass().getResource("/images/bg_dark.jpg"));
         this.participants = participants;
         setBackground(Color.DARK_GRAY);
         setDoubleBuffered(true);
@@ -98,6 +112,21 @@ public class VotingResultsPanel extends JPanel implements Runnable {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            }
+            
+            BufferedImage backgroundBuff = new BufferedImage(getSize().width,
+                    getSize().height, BufferedImage.TYPE_INT_ARGB);
+            
+            Graphics2D bg = backgroundBuff.createGraphics();
+            
+            int iw = background.getWidth(this);
+            int ih = background.getHeight(this);
+            if (iw > 0 && ih > 0) {
+                for (int x = 0; x < getSize().width; x += iw) {
+                    for (int y = 0; y < getSize().height; y += ih) {
+                        bg.drawImage(background, x, y, iw, ih, this);
+                    }
+                }
             }
             
             //With a help of this, we now can scale entryHeight with
@@ -177,10 +206,11 @@ public class VotingResultsPanel extends JPanel implements Runnable {
     
     public void paint(Graphics g) {
         super.paintComponent(g);  
+        
         if (initDone && !participants.isEmpty()) {
             Graphics2D g2d = (Graphics2D) g;
             g2d.setRenderingHints(rh);
-            
+            g2d.drawImage(backgroundBuff, null, 0, 0);
             //Here we did such an awesome thing, that no comment can describe it!
             //Ok ok i will try
             //Here we can scale size with a help of setting -> resultsNumber!
@@ -196,7 +226,7 @@ public class VotingResultsPanel extends JPanel implements Runnable {
             for (int i = 0; i < participantsSorted.size(); i++) {
                 if (i == resultsNumber)
                     break;
-                if (participantsSorted.get(i).getBuffImage() != null){
+                if (participantsSorted.get(i).getBuffImage() != null) {
                     g2d.drawImage(participantsSorted.get(i).getBuffImage(), null, entrySideSpacing,
                             participantsSorted.get(i).getY() + paintOffset);
                 }

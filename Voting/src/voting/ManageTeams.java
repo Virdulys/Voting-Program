@@ -113,7 +113,7 @@ public class ManageTeams extends JDialog {
                 btnAddTeam.setHorizontalAlignment(SwingConstants.LEFT);
                 btnAddTeam.setHorizontalTextPosition(SwingConstants.TRAILING);
                 btnAddTeam.setIconTextGap(5);
-                btnAddTeam.setIcon(new ImageIcon(ManageTeams.class.getResource("/icons/Add.png")));
+                btnAddTeam.setIcon(new ImageIcon(ManageTeams.class.getResource("/images/Add.png")));
                 btnAddTeam.setFocusable(false);
                 btnAddTeam.setMargin(new Insets(0, 10, 0, 5));
                 btnAddTeam.setToolTipText("Add new team");
@@ -126,7 +126,7 @@ public class ManageTeams extends JDialog {
                         removeSelected();
                     }
                 });
-                btnRemoveTeams.setIcon(new ImageIcon(ManageTeams.class.getResource("/icons/Delete.png")));
+                btnRemoveTeams.setIcon(new ImageIcon(ManageTeams.class.getResource("/images/Delete.png")));
                 btnRemoveTeams.setIconTextGap(5);
                 btnRemoveTeams.setHorizontalTextPosition(SwingConstants.TRAILING);
                 btnRemoveTeams.setHorizontalAlignment(SwingConstants.LEFT);

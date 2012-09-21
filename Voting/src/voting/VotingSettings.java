@@ -156,7 +156,7 @@ public class VotingSettings {
         btnDisplayResults.setHorizontalTextPosition(SwingConstants.TRAILING);
         btnDisplayResults.setHorizontalAlignment(SwingConstants.LEFT);
         btnDisplayResults.setIconTextGap(5);
-        btnDisplayResults.setIcon(new ImageIcon(VotingSettings.class.getResource("/icons/Refresh.png")));
+        btnDisplayResults.setIcon(new ImageIcon(VotingSettings.class.getResource("/images/Refresh.png")));
         btnDisplayResults.setBorder(UIManager.getBorder("Button.border"));
         btnDisplayResults.setFocusable(false);
         btnDisplayResults.setMargin(new Insets(0, 5, 0, 10));
@@ -177,7 +177,7 @@ public class VotingSettings {
         btnAddParticipant.setIconTextGap(5);
         btnAddParticipant.setHorizontalTextPosition(SwingConstants.TRAILING);
         btnAddParticipant.setHorizontalAlignment(SwingConstants.LEFT);
-        btnAddParticipant.setIcon(new ImageIcon(VotingSettings.class.getResource("/icons/Add.png")));
+        btnAddParticipant.setIcon(new ImageIcon(VotingSettings.class.getResource("/images/Add.png")));
         btnAddParticipant.setFocusable(false);
         btnAddParticipant.setToolTipText("Add new participant");
         btnAddParticipant.setMargin(new Insets(0, 10, 0, 5));
@@ -185,7 +185,7 @@ public class VotingSettings {
         btnAddParticipant.setText("Add Participant");
         
         btnRemoveParticipants = toolBar.add(removeSelectedAction);
-        btnRemoveParticipants.setIcon(new ImageIcon(VotingSettings.class.getResource("/icons/Delete.png")));
+        btnRemoveParticipants.setIcon(new ImageIcon(VotingSettings.class.getResource("/images/Delete.png")));
         btnRemoveParticipants.setHorizontalAlignment(SwingConstants.LEFT);
         btnRemoveParticipants.setIconTextGap(5);
         btnRemoveParticipants.setHorizontalTextPosition(SwingConstants.TRAILING);
