@@ -79,7 +79,7 @@ public class VotingSettings {
     private ResultsNumber resultsNumberDialog = null;
     private int resultsNumber = 10;
     private JMenuItem mntmUsage;
-    private UsageDialog usageDialog;
+    /*private UsageDialog usageDialog;*/
     // FIXME Teams (uncomment): base team management variables
     /*private JMenuItem mntmManageTeams;
     private final Action manageTeamsAction = new ManageTeamsAction();
@@ -134,6 +134,7 @@ public class VotingSettings {
                                     break;
                             default: break;
                         }
+                        model.setValueAt(null, row, 1); // 1 is points column
                     }
                 }
                 
@@ -252,7 +253,7 @@ public class VotingSettings {
         mntmResultDisplay.addActionListener(mnListener);
         mnSettings.add(mntmResultDisplay);
         
-        mnHelp = new JMenu("Help");
+        /*mnHelp = new JMenu("Help");
         mnHelp.setMnemonic('H');
         menuBar.add(mnHelp);
         
@@ -260,7 +261,7 @@ public class VotingSettings {
         mntmResultDisplay.setMnemonic('U');
         mntmUsage.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, Event.CTRL_MASK));
         mntmUsage.addActionListener(mnListener);
-        mnHelp.add(mntmUsage);
+        mnHelp.add(mntmUsage);*/
         
         //FIXME Teams (uncomment): enable team management menu item
         /*mntmManageTeams = new JMenuItem("Manage Teams");
@@ -294,12 +295,12 @@ public class VotingSettings {
                     resultsNumberDialog = new ResultsNumber(resultsNumber);
                 resultsNumber = resultsNumberDialog.showDialog();                
             }
-            else if (e.getActionCommand().equals("Usage")) {
+            /*else if (e.getActionCommand().equals("Usage")) {
                 if (usageDialog == null)
                     usageDialog = new UsageDialog();
                 usageDialog.setVisible(true);
                 
-            }
+            }*/
         }
     }
     

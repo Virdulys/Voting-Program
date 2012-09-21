@@ -39,6 +39,7 @@ public class VotingResultsPanel extends JPanel implements Runnable {
     private int delay = 50; //Thread delay
     private Paint entryBackgroundColor = Color.GRAY;
     private Paint entryFontColor = Color.CYAN;
+    private Paint pointsFontColor = Color.PINK;
     
     public VotingResultsPanel(ArrayList<Participant> participants) {
         this.participants = participants;
@@ -100,11 +101,12 @@ public class VotingResultsPanel extends JPanel implements Runnable {
             }
             
             //With a help of this, we now can scale entryHeight with
-            //Setting -> resultsNumber!!!!!!!!!!!!!!
-            if (participants.size() >= resultsNumber)
+            //Setting -> resultsNumber!
+            /*if (participants.size() >= resultsNumber)
                 entryCount = participants.size();
             else
-                entryCount = resultsNumber;             
+                entryCount = resultsNumber; */
+            entryCount = resultsNumber;
             //Top spacing is 15% of entry width
             entryTopSpacing = (getSize().height / entryCount) * 15 / 100; 
             entryHeight = (getSize().height  - entryTopSpacing * (entryCount+1)) / entryCount;
@@ -132,6 +134,10 @@ public class VotingResultsPanel extends JPanel implements Runnable {
                 //Drawing participants data into entry
                 g2.drawString(participants.get(i).getParticipantName(), 20, fontSize);
                 //Here are some hard coded value to leave spacing from left side and top (entryWidth -50, 20)
+                g2.setPaint(entryBackgroundColor );
+                g2.fillRect(entryWidth - 40 - fontMetrics.stringWidth(
+                        String.valueOf(participants.get(i).getPoints())),0, entryWidth, entryHeight );
+                g2.setPaint(pointsFontColor ); //Set to points color
                 g2.drawString(String.valueOf(participants.get(i).getPoints()),
                                 + entryWidth - 20 - fontMetrics.stringWidth(
                                         String.valueOf(participants.get(i).getPoints())),
@@ -179,9 +185,9 @@ public class VotingResultsPanel extends JPanel implements Runnable {
             //Ok ok i will try
             //Here we can scale size with a help of setting -> resultsNumber!
             int paintOffset = 0;
-            if (participantsSorted.size() > resultsNumber){
+            /*if (participantsSorted.size() > resultsNumber){
                 paintOffset = (getHeight() - ((entryHeight+entryTopSpacing) * resultsNumber))/2;
-            }
+            }*/
             if (participantsSorted.size() < resultsNumber) {
                 paintOffset = (getHeight() - ((entryHeight+entryTopSpacing) * participantsSorted.size()))/2;
             }
