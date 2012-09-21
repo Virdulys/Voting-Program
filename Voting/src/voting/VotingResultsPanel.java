@@ -12,12 +12,9 @@ import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.Collections;
 import java.util.ArrayList;
+import java.util.Collections;
 
-import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 public class VotingResultsPanel extends JPanel implements Runnable {
@@ -41,9 +38,9 @@ public class VotingResultsPanel extends JPanel implements Runnable {
     private String FONT = "Times"; // Font name
     private final int DURATION = 300; // Participants sorting animation duration
     private int delay = 50; //Thread delay
-    private Paint entryBackgroundColor = new Color(50, 50, 50, 180);
-    private Paint entryFontColor = Color.CYAN;
-    private Paint pointsFontColor = Color.PINK;
+    private Paint entryBackgroundColor = new Color(15, 15, 15);
+    private Paint entryFontColor = Color.WHITE;
+    private Paint pointsFontColor = new Color(255, 164, 209);
     private Image background = null;
     private BufferedImage backgroundBuff = null;
     
