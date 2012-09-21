@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Paint;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
@@ -20,22 +21,26 @@ public class VotingResultsPanel extends JPanel implements Runnable {
     private ArrayList<Participant> participants;
     private ArrayList<Participant> participantsSorted;
     private boolean refresh = true; //Variable for forcing rerunning of refresh
-    private boolean animate = true; //Variable for forcing rerunning of animation
+    private boolean animate = false; //Variable for forcing rerunning of animation
     private boolean initDone = false; //Variable stops rendering of participants, until initialize is done.
     private Thread animator;
     private RenderingHints rh;
-    private int entryHeight = 30; // Size of the entry (background + participants name + team + points)
-    private int entryWidth = 350; // 400
-    private int entryTopSpacing = 15; //Pixels to be left out from the top when painting participants
-    private int entryLeftSpacing = 20; // Pixels to be left out from the left side when painting entries
-    private final int DURATION = 300; // Participants sorting animation duration
-    private String FONT = "Times"; // Font name
-    private int delay = 50; //Thread delay
-    private VotingResults parent = null;
+    private int entryHeight; // Size of the entry (background + participants name + team + points)
+    private int entryWidth; 
+    private int entryTopSpacing; //Pixels to be left out from the top when painting participants    
+    private int entryCount;
+    private int fontSize;
     private FontMetrics fontMetrics;
+    private int resultsNumber;
+    //Hard coded values start here
+    private int entrySideSpacing = 20; // Pixels to be left out from the left side when painting entries
+    private String FONT = "Times"; // Font name
+    private final int DURATION = 300; // Participants sorting animation duration
+    private int delay = 50; //Thread delay
+    private Paint entryBackgroundColor = Color.GRAY;
+    private Paint entryFontColor = Color.CYAN;
     
-    public VotingResultsPanel(ArrayList<Participant> participants, VotingResults parent) {
-        this.parent = parent;
+    public VotingResultsPanel(ArrayList<Participant> participants) {
         this.participants = participants;
         setBackground(Color.DARK_GRAY);
         setDoubleBuffered(true);
@@ -86,18 +91,29 @@ public class VotingResultsPanel extends JPanel implements Runnable {
     }
     
     public void cycle() {
-        if (refresh) {  //Checking if we need to refresh entries
+        if (refresh && !participants.isEmpty()) {  //Checking if we need to refresh entries
+            
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            
+            //With a help of this, we now can scale entryHeight with
+            //Setting -> resultsNumber!!!!!!!!!!!!!!
+            if (participants.size() >= resultsNumber)
+                entryCount = participants.size();
+            else
+                entryCount = resultsNumber;             
+            //Top spacing is 15% of entry width
+            entryTopSpacing = (getSize().height / entryCount) * 15 / 100; 
+            entryHeight = (getSize().height  - entryTopSpacing * (entryCount+1)) / entryCount;
+            fontSize = entryHeight * 80 / 100; //Font size is 80% of entries height
+            entryWidth = getSize().width - entrySideSpacing*2;
+            
             for (int i = 0; i < participants.size(); i++) {   
                 // Setting last position (this is needed for animation)
                 participants.get(i).setLastPos(participants.get(i).getNewPos()); 
-                
-                //Screen, entry, font calculations from screen resolution
-                int screenRes = Toolkit.getDefaultToolkit().getScreenResolution();
-                int fontSize = (int)Math.round(30.0 * screenRes / 72.0);  
-                entryWidth = parent.getWidth() - 40;
-                this.setSize(parent.getWidth(), parent.getHeight());
-                entryHeight = (int)Math.round(screenRes / 150.0)+50;
-                
                 //Creating an entry - image, from participants data 
                 BufferedImage offImage = new BufferedImage(entryWidth,
                         entryHeight, BufferedImage.TYPE_INT_ARGB);
@@ -105,20 +121,22 @@ public class VotingResultsPanel extends JPanel implements Runnable {
                 Graphics2D g2 = offImage.createGraphics();
                 g2.setRenderingHints(rh);
                 //Setting entries background color 
-                g2.setPaint(Color.GRAY);
+                g2.setPaint(entryBackgroundColor );
                 g2.fillRect(0, 0, entryWidth, entryHeight);
                 //Setting up font
                 Font theFont = new Font(FONT, Font.BOLD, fontSize);
-                g2.setPaint(Color.CYAN);
+                g2.setPaint(entryFontColor );
                 g2.setFont(theFont);
                 // fontMetrics is used to get the width of font (mainly for points to align equally)
                 fontMetrics = g2.getFontMetrics();
                 //Drawing participants data into entry
-                //Here are some hard coded value to leave spacing from left side and top (20, 20)
-                g2.drawString(participants.get(i).getParticipantName(), 20, 20);
+                g2.drawString(participants.get(i).getParticipantName(), 20, fontSize);
                 //Here are some hard coded value to leave spacing from left side and top (entryWidth -50, 20)
                 g2.drawString(String.valueOf(participants.get(i).getPoints()),
-                        +  entryWidth - 20 - fontMetrics.stringWidth(String.valueOf(participants.get(i).getPoints())), 20); //TODO make number offsets equal from the right
+                                + entryWidth - 20 - fontMetrics.stringWidth(
+                                        String.valueOf(participants.get(i).getPoints())),
+                                fontSize); 
+                //TODO We need to shorten this up, it looks just awful
                 //Setting drawn image to participants data
                 participants.get(i).setBuffImage(offImage);
             }       
@@ -153,15 +171,28 @@ public class VotingResultsPanel extends JPanel implements Runnable {
     
     public void paint(Graphics g) {
         super.paintComponent(g);  
-        if (initDone) {
+        if (initDone && !participants.isEmpty()) {
             Graphics2D g2d = (Graphics2D) g;
             g2d.setRenderingHints(rh);
+            
+            //Here we did such an awesome thing, that no comment can describe it!
+            //Ok ok i will try
+            //Here we can scale size with a help of setting -> resultsNumber!
+            int paintOffset = 0;
+            if (participantsSorted.size() > resultsNumber){
+                paintOffset = (getHeight() - ((entryHeight+entryTopSpacing) * resultsNumber))/2;
+            }
+            if (participantsSorted.size() < resultsNumber) {
+                paintOffset = (getHeight() - ((entryHeight+entryTopSpacing) * participantsSorted.size()))/2;
+            }
             //Here we go through the list of the participants and draw them on screen
             //We use shallow sorted copy to index them
             for (int i = 0; i < participantsSorted.size(); i++) {
+                if (i == resultsNumber)
+                    break;
                 if (participantsSorted.get(i).getBuffImage() != null){
-                    g2d.drawImage(participantsSorted.get(i).getBuffImage(), null, entryLeftSpacing,
-                            participantsSorted.get(i).getY());
+                    g2d.drawImage(participantsSorted.get(i).getBuffImage(), null, entrySideSpacing,
+                            participantsSorted.get(i).getY() + paintOffset);
                 }
             }
             Toolkit.getDefaultToolkit().sync();
@@ -177,12 +208,7 @@ public class VotingResultsPanel extends JPanel implements Runnable {
     public int posToY (int pos) {
         return entryTopSpacing * (pos + 1) + entryHeight * pos;
     }
-
-    public VotingResults getParent() {
-        return parent;
-    }
-
-    public void setParent(VotingResults parent) {
-        this.parent = parent;
+    public void setResultsNumber(int resultsNumber) {
+        this.resultsNumber = resultsNumber;
     }
 }
