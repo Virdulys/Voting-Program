@@ -41,9 +41,11 @@ public class VotingResultsPanel extends JPanel implements Runnable {
     private String FONT = "Times"; // Font name
     private final int DURATION = 300; // Participants sorting animation duration
     private int delay = 50; //Thread delay
-    private Paint entryBackgroundColor = new Color(50, 50, 50, 180);
-    private Paint entryFontColor = Color.CYAN;
-    private Paint pointsFontColor = Color.PINK;
+    private int defaultColor = 60;
+    private int gradientStep = 10;
+    private Paint entryBackgroundColor = new Color(defaultColor, defaultColor, defaultColor);
+    private Paint entryFontColor = Color.WHITE;
+    private Paint pointsFontColor = new Color(255, 164, 209);
     private Image background = null;
     private BufferedImage backgroundBuff = null;
     
@@ -143,7 +145,11 @@ public class VotingResultsPanel extends JPanel implements Runnable {
             fontSize = entryHeight * 80 / 100; //Font size is 80% of entries height
             entryWidth = getSize().width - entrySideSpacing*2;
             
-            for (int i = 0; i < participants.size(); i++) {   
+            for (int i = 0; i < participants.size(); i++) {
+                int color = defaultColor - gradientStep*i;
+                if (color < 0)
+                    color = 0;
+                entryBackgroundColor = new Color(color, color, color);
                 // Setting last position (this is needed for animation)
                 participants.get(i).setLastPos(participants.get(i).getNewPos()); 
                 //Creating an entry - image, from participants data 
@@ -164,10 +170,10 @@ public class VotingResultsPanel extends JPanel implements Runnable {
                 //Drawing participants data into entry
                 g2.drawString(participants.get(i).getParticipantName(), 20, fontSize);
                 //Here are some hard coded value to leave spacing from left side and top (entryWidth -50, 20)
-                g2.setPaint(entryBackgroundColor );
+                g2.setPaint(entryBackgroundColor);
                 g2.fillRect(entryWidth - 40 - fontMetrics.stringWidth(
                         String.valueOf(participants.get(i).getPoints())),0, entryWidth, entryHeight );
-                g2.setPaint(pointsFontColor ); //Set to points color
+                g2.setPaint(pointsFontColor ); //Set points color
                 g2.drawString(String.valueOf(participants.get(i).getPoints()),
                                 + entryWidth - 20 - fontMetrics.stringWidth(
                                         String.valueOf(participants.get(i).getPoints())),
