@@ -41,7 +41,7 @@ public class VotingResultsPanel extends JPanel implements Runnable {
     private String FONT = "Times"; // Font name
     private final int DURATION = 300; // Participants sorting animation duration
     private int delay = 50; //Thread delay
-    private Paint entryBackgroundColor = Color.BLACK;
+    private Paint entryBackgroundColor = new Color(50, 50, 50, 180);
     private Paint entryFontColor = Color.CYAN;
     private Paint pointsFontColor = Color.PINK;
     private Image background = null;
@@ -80,7 +80,7 @@ public class VotingResultsPanel extends JPanel implements Runnable {
 
         beforeTime = System.currentTimeMillis();
         try {
-            Thread.sleep(10);
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -106,6 +106,7 @@ public class VotingResultsPanel extends JPanel implements Runnable {
     }
     
     public void cycle() {
+        createBackground();
         if (refresh && !participants.isEmpty()) {  //Checking if we need to refresh entries
             
             try {
@@ -114,7 +115,7 @@ public class VotingResultsPanel extends JPanel implements Runnable {
                 e.printStackTrace();
             }
             
-            BufferedImage backgroundBuff = new BufferedImage(getSize().width,
+            backgroundBuff = new BufferedImage(getSize().width,
                     getSize().height, BufferedImage.TYPE_INT_ARGB);
             
             Graphics2D bg = backgroundBuff.createGraphics();
@@ -152,7 +153,7 @@ public class VotingResultsPanel extends JPanel implements Runnable {
                 Graphics2D g2 = offImage.createGraphics();
                 g2.setRenderingHints(rh);
                 //Setting entries background color 
-                g2.setPaint(entryBackgroundColor );
+                g2.setPaint(entryBackgroundColor);
                 g2.fillRect(0, 0, entryWidth, entryHeight);
                 //Setting up font
                 Font theFont = new Font(FONT, Font.BOLD, fontSize);
@@ -205,12 +206,15 @@ public class VotingResultsPanel extends JPanel implements Runnable {
     }
     
     public void paint(Graphics g) {
-        super.paintComponent(g);  
+        super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHints(rh);
+        g2d.drawImage(backgroundBuff, null, 0, 0);
+        if (backgroundBuff == null)
+            createBackground();
         
         if (initDone && !participants.isEmpty()) {
-            Graphics2D g2d = (Graphics2D) g;
-            g2d.setRenderingHints(rh);
-            g2d.drawImage(backgroundBuff, null, 0, 0);
+            
             //Here we did such an awesome thing, that no comment can describe it!
             //Ok ok i will try
             //Here we can scale size with a help of setting -> resultsNumber!
@@ -246,5 +250,22 @@ public class VotingResultsPanel extends JPanel implements Runnable {
     }
     public void setResultsNumber(int resultsNumber) {
         this.resultsNumber = resultsNumber;
+    }
+    
+    private void createBackground() {
+        backgroundBuff = new BufferedImage(getSize().width,
+                getSize().height, BufferedImage.TYPE_INT_ARGB);
+        
+        Graphics2D bg = backgroundBuff.createGraphics();
+        
+        int iw = background.getWidth(this);
+        int ih = background.getHeight(this);
+        if (iw > 0 && ih > 0) {
+            for (int x = 0; x < getSize().width; x += iw) {
+                for (int y = 0; y < getSize().height; y += ih) {
+                    bg.drawImage(background, x, y, iw, ih, this);
+                }
+            }
+        }        
     }
 }
