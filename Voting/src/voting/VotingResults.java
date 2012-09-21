@@ -26,7 +26,7 @@ public class VotingResults extends JFrame implements KeyListener {
         addKeyListener(this);
         setLayout(new BorderLayout());
         this.parent = parent;
-        this.resultsPanel = new VotingResultsPanel(participants, this);
+        this.resultsPanel = new VotingResultsPanel(participants);
         add(resultsPanel, BorderLayout.CENTER);
         //pack();
         setSize(standardFormWidth, standardFormHeight);
@@ -39,7 +39,6 @@ public class VotingResults extends JFrame implements KeyListener {
         setLayout(new BorderLayout());
         this.parent = parent;
         this.resultsPanel = resultsPanel;
-        this.resultsPanel.setParent(this);
         add(resultsPanel, BorderLayout.CENTER);
         //setUndecorated(fullscreen);
         toggleFullscreen(0, fullscreen);
@@ -105,6 +104,9 @@ public class VotingResults extends JFrame implements KeyListener {
         //resultsPanel.refreshResults();
         //validate();
     }
+    public void setResultsNumber(int resultsNumber) {
+        resultsPanel.setResultsNumber(resultsNumber);
+    }
 
     @Override
     public void keyPressed(KeyEvent e) {
@@ -114,7 +116,6 @@ public class VotingResults extends JFrame implements KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_F11) {
-            //TODO call fullscreen method from here
             //showOnScreen(0, parent);
             // Call parent method to destroy me
             //manager.
